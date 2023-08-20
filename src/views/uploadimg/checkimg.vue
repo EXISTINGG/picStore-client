@@ -18,7 +18,7 @@
       </el-upload>
     </div>
 
-    <Checkimginfo :checkImg="uploadImgObj" />
+    <CheckImgInfo :checkImg="uploadImgObj" />
   </div>
 </template>
 
@@ -27,7 +27,7 @@ import axios from 'axios'
 import { ref, onBeforeUnmount } from 'vue'
 import { UploadFilled } from '@element-plus/icons-vue'
 import { success, warning, error } from '@/utils/message'
-import Checkimginfo from './components/Checkimginfo.vue'
+import CheckImgInfo from './components/CheckImgInfo.vue'
 
 // 上传的图片
 const uploadImgObj = ref({})

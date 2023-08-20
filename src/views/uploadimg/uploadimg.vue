@@ -38,7 +38,7 @@
       </div>
     </div>
 
-    <UploadList :uploadList="uploadImgList" />
+    <UpLoadList :uploadList="uploadImgList" />
   </div>
 </template>
 
@@ -49,7 +49,7 @@ import { UploadFilled } from '@element-plus/icons-vue'
 import { getItem } from '@/utils/localStorage'
 import { useHomeStore } from '@/store/home'
 import { success, warning, error } from '@/utils/message'
-import UploadList from './components/UploadList.vue'
+import UpLoadList from './components/UpLoadList.vue'
 
 const homeStore = useHomeStore()
 

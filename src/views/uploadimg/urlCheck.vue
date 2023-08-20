@@ -14,7 +14,7 @@
       </div>
     </div>
 
-    <Checkimginfo :checkImg="uploadImgObj" />
+    <CheckImgInfo :checkImg="uploadImgObj" />
   </div>
 </template>
 
@@ -22,7 +22,7 @@
 import axios from 'axios'
 import { ref } from 'vue'
 import { success, warning, error } from '@/utils/message'
-import Checkimginfo from './components/Checkimginfo.vue'
+import CheckImgInfo from './components/CheckImgInfo.vue'
 
 // 上传的图片链接
 const imgUrl = ref('')
