@@ -24,8 +24,7 @@
           ref="registerFormRef"
           :model="registerForm"
           :rules="rules"
-          label-with="5px"
-        >
+          label-with="5px">
           <el-form-item prop="username" label=" ">
             <el-input
               type="text"
@@ -174,6 +173,171 @@
           <!-- 绑定点击事件 -->
           <p @click="mySwitch">没有账号?去注册</p>
         </div>
+      </div>
+
+      <!-- 移动端 -->
+      <div class="mobile-box">
+        <!-- 注册盒子 -->
+      <div class="register-form" v-show="!flag">
+        <!-- 标题盒子 -->
+        <div class="title-box">
+          <h1>注册</h1>
+        </div>
+        <!-- 输入框盒子 -->
+        <el-form
+          ref="registerFormRef"
+          :model="registerForm"
+          :rules="rules"
+          label-with="5px">
+          <el-form-item prop="username" label=" ">
+            <el-input
+              type="text"
+              placeholder="用户名"
+              :prefix-icon="User"
+              clearable
+              maxlength="7"
+              show-word-limit
+              v-model.trim="registerForm.username"
+            />
+          </el-form-item>
+          <el-form-item prop="email" label=" ">
+            <el-input
+              type="text"
+              placeholder="邮箱"
+              :prefix-icon="Message"
+              clearable
+              v-model.trim="registerForm.email"
+            />
+          </el-form-item>
+          <el-form-item prop="code" label=" " class="code-form">
+            <el-input
+              type="text"
+              placeholder="验证码"
+              :prefix-icon="Key"
+              clearable
+              maxlength="6"
+              v-model.trim="registerForm.code"
+              class="code-input"
+            />
+            <el-button type="primary" round class="code-btn" :disabled="disabledBtn" @click="RegGetCode">{{disabledBtn ? `${waitTime}` : '获取验证码'}}</el-button>
+          </el-form-item>
+          <el-form-item prop="password" label=" ">
+            <el-input
+              type="password"
+              placeholder="密码"
+              :prefix-icon="Lock"
+              show-password
+              clearable
+              maxlength="12"
+              v-model.trim="registerForm.password"
+            />
+          </el-form-item>
+          <el-form-item prop="confirmPassword" label=" ">
+            <el-input
+              type="password"
+              placeholder="确认密码"
+              :prefix-icon="Lock"
+              show-password
+              clearable
+              maxlength="12"
+              v-model.trim="registerForm.confirmPassword"
+            />
+          </el-form-item>
+        </el-form>
+        <!-- 按钮盒子 -->
+        <div class="btn-box">
+          <button @click="submitRegisterForm(registerFormRef)">注册</button>
+          <!-- 绑定点击事件 -->
+          <p @click="mySwitch">已有账号?去登录</p>
+        </div>
+      </div>
+      <!-- 登录盒子 -->
+      <div class="login-form" v-show="flag">
+        <!-- 标题盒子 -->
+        <div class="title-box">
+          <h1>登录</h1>
+        </div>
+        <div class="login-method">
+            <span :class="loginActive === 0 ? 'border' : ''" @click="selectLogin(0)">用户名登录</span>
+            <span :class="loginActive === 1 ? 'border' : ''" @click="selectLogin(1)">邮箱登录</span>
+        </div>
+        <!-- 表单区(登录) -->
+        <div class="login-area">
+                  <!-- 输入框盒子(用户名) -->
+        <transition name="el-zoom-in-center">
+        <el-form
+          ref="userNameloginFormRef"
+          :model="userNameLoginForm"
+          :rules="rules"
+          label-with="5px"
+          class="login-form-box"
+          v-show="loginActive === 0"
+        >
+          <el-form-item prop="username" label=" ">
+            <el-input
+              type="text"
+              placeholder="用户名"
+              :prefix-icon="User"
+              clearable
+              maxlength="7"
+              show-word-limit
+              v-model.trim="userNameLoginForm.username"
+            />
+          </el-form-item>
+          <el-form-item prop="password" label=" ">
+            <el-input
+              type="password"
+              placeholder="密码"
+              :prefix-icon="Lock"
+              show-password
+              clearable
+              maxlength="12"
+              v-model.trim="userNameLoginForm.password"
+            />
+          </el-form-item>
+        </el-form>
+        </transition>
+        <!-- 输入框盒子(邮箱) -->
+        <transition name="el-zoom-in-center">
+        <el-form
+          ref="emailLoginFormRef"
+          :model="emailLoginForm"
+          :rules="rules"
+          label-with="5px"
+          class="login-form-box"
+          v-show="loginActive === 1"
+        >
+          <el-form-item prop="email" label=" ">
+            <el-input
+              type="text"
+              placeholder="邮箱"
+              :prefix-icon="Message"
+              clearable 
+              v-model.trim="emailLoginForm.email"
+            />
+          </el-form-item>
+          <el-form-item prop="password" label=" ">
+            <el-input
+              type="password"
+              placeholder="密码"
+              :prefix-icon="Lock"
+              show-password
+              clearable
+              maxlength="12"
+              v-model.trim="emailLoginForm.password"
+            />
+          </el-form-item>
+        </el-form>
+         </transition>
+        </div>
+
+        <!-- 按钮盒子 -->
+        <div class="btn-box">
+          <button @click="submitLoginForm(loginActive === 0 ? userNameloginFormRef : emailLoginFormRef)">登录</button>
+          <!-- 绑定点击事件 -->
+          <p @click="mySwitch">没有账号?去注册</p>
+        </div>
+      </div>
       </div>
     </div>
   </div>
@@ -399,7 +563,7 @@ onBeforeUnmount(() => {
 })
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 /* 去除input的轮廓 */
 input {
   outline: none;
@@ -436,6 +600,9 @@ input {
   /* 设置盒子阴影 */
   box-shadow: 2px 1px 19px rgba(0, 0, 0, 0.1);
   /* backdrop-filter: blur(20px); */
+}
+.mobile-box {
+  display: none;
 }
 
 /* 滑动的盒子 */
@@ -658,5 +825,36 @@ button:hover {
 .btn-box p:hover {
   cursor: pointer;
   border-bottom: 1px solid white;
+}
+
+@media (max-width: 768px) {
+  .pre-box,.register-form,.login-form {
+    display: none;
+  }
+
+  .mobile-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    .register-form,.login-form {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .login-form .login-area {
+      display: flex;
+      justify-content: center;
+      height: 100px;
+      width: 90%;
+
+
+    .el-form-item {
+      width: 90%;
+    }
+    }  
+}
 }
 </style>

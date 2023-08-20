@@ -259,7 +259,7 @@ const deleteAccount = () => {
 .right-content {
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.5);
-  backdrop-filter: saturate(100%) blur(20px);
+  backdrop-filter: saturate(100%) blur(10px);
 }
 
 .header {
@@ -337,5 +337,16 @@ const deleteAccount = () => {
       height: 70%;
     }
   }
+}
+
+@media (max-width: 768px) {
+  .main {
+    width: 90%;
+  }
+
+  .right-content {
+    justify-content: center;
+  }
+
 }
 </style>
