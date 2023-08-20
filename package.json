@@ -1,0 +1,31 @@
+{
+  "name": "myimags",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.1.0",
+    "axios": "^1.4.0",
+    "element-plus": "^2.3.5",
+    "pinia": "^2.1.3",
+    "vue": "^3.2.47",
+    "vue-router": "^4.2.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.1.0",
+    "lib-flexible": "^0.3.2",
+    "node-sass": "^8.0.0",
+    "postcss-pxtorem": "^6.0.0",
+    "sass": "^1.62.1",
+    "sass-loader": "^13.2.2",
+    "unplugin-auto-import": "^0.16.0",
+    "unplugin-icons": "^0.16.5",
+    "unplugin-vue-components": "^0.24.1",
+    "vite": "^4.2.0"
+  }
+}
