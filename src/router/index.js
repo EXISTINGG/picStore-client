@@ -21,6 +21,7 @@ const routes = [
   {path: '/checkimg', name: 'Checkimg', component: () => import('@/views/uploadimg/checkimg.vue'),meta: {title: '图片检测-本地'},},
   {path: '/urlcheck', name: 'UrlCheck', component: () => import('@/views/uploadimg/urlCheck.vue'),meta: {title: '图片检测-链接'},},
   {path: '/user', name: 'User', component: () => import('@/views/user/index.vue'),meta: {title: '用户中心'},},
+  {path: '/about', name: 'About', component: () => import('@/views/about.vue'),meta: {title: '关于'},},
   { 
     path: '/admin', 
     name: 'Admin', 

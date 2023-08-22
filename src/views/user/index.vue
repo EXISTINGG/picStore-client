@@ -341,7 +341,7 @@ const deleteAccount = () => {
 
 @media (max-width: 768px) {
   .main {
-    width: 90%;
+    width: 100%;
   }
 
   .right-content {

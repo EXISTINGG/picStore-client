@@ -13,39 +13,33 @@
     <el-menu-item index="0">---</el-menu-item>
     <el-sub-menu index="1">
       <template #title><el-icon><PictureFilled /></el-icon>图片服务</template>
-       <el-sub-menu index="2-1">
+       <el-sub-menu index="1-1">
         <template #title><el-icon><UploadFilled /></el-icon>上传图片</template>
         <el-menu-item index="/upload">本地图片</el-menu-item>
         <el-menu-item index="/urlupload">网络图片</el-menu-item>
       </el-sub-menu>
-      <el-sub-menu index="2-2">
+      <el-sub-menu index="1-2">
         <template #title><el-icon><WarningFilled /></el-icon>图片检测</template>
         <el-menu-item index="/checkimg">本地图片</el-menu-item>
         <el-menu-item index="/urlcheck">网络图片</el-menu-item>
       </el-sub-menu>
       <el-menu-item index="" @click="randomImg"><el-icon><PictureFilled /></el-icon>随机一图</el-menu-item>
     </el-sub-menu>
-    <el-sub-menu index="3">
+    <el-sub-menu index="2">
       <template #title><el-icon><Operation /></el-icon>更多</template>
-      <el-menu-item index="3-1"><el-icon><InfoFilled /></el-icon>关于</el-menu-item>
+      <el-menu-item index="/about"><el-icon><InfoFilled /></el-icon>关于</el-menu-item>
       <el-menu-item index=""><el-icon><Document /></el-icon><el-link href="https://apifox.com/apidoc/shared-f374e904-a169-44ee-82e6-5639683ab7db" target="_blank">开放API</el-link></el-menu-item>
-      <el-sub-menu index="3-4">
+      <el-sub-menu index="2-4">
         <template #title><el-icon><Promotion /></el-icon>开源地址</template>
-        <el-menu-item index="3-4-1">前端</el-menu-item>
-        <el-menu-item index="3-4-2">后端</el-menu-item>
+        <el-menu-item index="2-4-1">前端</el-menu-item>
+        <el-menu-item index="2-4-2">后端</el-menu-item>
       </el-sub-menu>
     </el-sub-menu>
-    <el-sub-menu index="4" v-if="isloginStatus">
+    <el-sub-menu index="3" v-if="isloginStatus">
       <template #title><el-icon><Avatar /></el-icon>{{loginStore.user.username}}</template>
       <el-menu-item index="/user"><el-icon><Tools /></el-icon>账户设置</el-menu-item>
       <el-menu-item index="/admin" v-if="loginStore.user.power == 1 || loginStore.user.power == 2"><el-icon><Cpu /></el-icon>后台管理</el-menu-item>
       <el-menu-item index="" @click="logOut"><el-icon><SwitchButton /></el-icon>退出登录</el-menu-item>
-      <el-sub-menu index="3-4">
-        <template #title>item four</template>
-        <el-menu-item index="3-4-1">item one</el-menu-item>
-        <el-menu-item index="3-4-2">item two</el-menu-item>
-        <el-menu-item index="3-4-3">item three</el-menu-item>
-      </el-sub-menu>
     </el-sub-menu>
     <el-menu-item index="/login" v-else><el-icon><UserFilled /></el-icon>注册/登录</el-menu-item>
   </el-menu>
