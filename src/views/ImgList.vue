@@ -8,7 +8,7 @@
           class="img"
           :src="item.url"
           :key="item.url"
-          fit="cover"
+          fit="contain"
           :title="item.imgName"
           lazy
           :preview-src-list="homeStore.imgPreviewList"
