@@ -29,8 +29,8 @@
       <h3>联系我们</h3>
       <p>
         如有任何问题或反馈，请随时联系我们。您可以通过以下方式与我们取得联系：<a
-          href="mailto:contact@existing图床.com"
-          >contact@existing图床.com</a
+          href="mailto:existingpicstore@qq.com"
+          >existingpicstore@qq.com</a
         >
       </p>
     </div>
