@@ -22,6 +22,7 @@
 </template>
 
 <script setup>
+import axios from 'axios'
 import { ref, onMounted } from 'vue'
 // import { ElLoading } from 'element-plus'
 import { useHomeStore } from '@/store/home'
@@ -45,6 +46,9 @@ onMounted(async () => {
   console.log(333, homeStore.currentFolder)
 
   homeStore.topMenuH = topMenuRef.value.offsetHeight
+
+  // 激活服务器
+  axios.get('https://nsfwapi.hxq-001.top/start')
 })
 
 const imgIndex = ref(0)
