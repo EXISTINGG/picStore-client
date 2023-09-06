@@ -39,7 +39,7 @@
       </el-aside>
       <el-container class="body-right">
         <el-header ref="headerRef" class="home-header">
-          <div>
+          <div class="pc-header">
             <el-menu
               :default-active="activeIndex"
               class="el-menu-demo"
@@ -130,14 +130,133 @@
               >
             </el-menu>
           </div>
+
+          <div class="mobile-header">
+            <header>
+              <div class="header-left">
+                <div class="fold-expand">
+                  <el-icon v-show="!isCollapse" @click="handleOpen" :size="28"
+                    ><Fold
+                  /></el-icon>
+                  <el-icon v-show="isCollapse" @click="handleOpen" :size="28"
+                    ><Expand
+                  /></el-icon>
+                </div>
+              </div>
+              <div class="header-right">
+                <div class="fold-expand">
+                  <el-icon
+                    v-show="!isCollapseMenu"
+                    @click="handleOpenMenu"
+                    :size="28"
+                    ><Expand
+                  /></el-icon>
+                  <el-icon
+                    v-show="isCollapseMenu"
+                    @click="handleOpenMenu"
+                    :size="28"
+                    ><Fold
+                  /></el-icon>
+                </div>
+              </div>
+            </header>
+            <div :style="{'position': isCollapseMenu ? '' : 'fixed','display': isCollapseMenu ? 'none' : '',}" class="right-menu">
+              <el-menu
+                :default-active="activeIndex"
+                class="el-menu-vertical-demo"
+                router
+                :ellipsis="false"
+                @select="handleSelect"
+              >
+                <el-sub-menu index="1">
+                  <template #title
+                    ><el-icon><PictureFilled /></el-icon>图片服务</template
+                  >
+                  <el-sub-menu index="1-1">
+                    <template #title
+                      ><el-icon><UploadFilled /></el-icon>上传图片</template
+                    >
+                    <el-menu-item index="/upload">本地图片</el-menu-item>
+                    <el-menu-item index="/urlupload">网络图片</el-menu-item>
+                  </el-sub-menu>
+                  <el-sub-menu index="1-2">
+                    <template #title
+                      ><el-icon><WarningFilled /></el-icon>图片检测</template
+                    >
+                    <el-menu-item index="/checkimg">本地图片</el-menu-item>
+                    <el-menu-item index="/urlcheck">网络图片</el-menu-item>
+                  </el-sub-menu>
+                  <el-menu-item index="" @click="randomImg"
+                    ><el-icon><PictureFilled /></el-icon>随机一图</el-menu-item
+                  >
+                </el-sub-menu>
+                <el-sub-menu index="2">
+                  <template #title
+                    ><el-icon><Operation /></el-icon>更多</template
+                  >
+                  <el-menu-item index="/about"
+                    ><el-icon><InfoFilled /></el-icon>关于</el-menu-item
+                  >
+                  <el-menu-item index=""
+                    ><el-icon><Document /></el-icon
+                    ><el-link
+                      href="https://apifox.com/apidoc/shared-f374e904-a169-44ee-82e6-5639683ab7db"
+                      target="_blank"
+                      >开放API</el-link
+                    ></el-menu-item
+                  >
+                  <el-sub-menu index="2-4">
+                    <template #title
+                      ><el-icon><Promotion /></el-icon>开源地址</template
+                    >
+                    <el-menu-item index="2-4-1">前端</el-menu-item>
+                    <el-menu-item index="2-4-2">后端</el-menu-item>
+                  </el-sub-menu>
+                </el-sub-menu>
+                <el-sub-menu index="3" v-if="isloginStatus">
+                  <template #title
+                    ><el-icon><Avatar /></el-icon
+                    >{{ loginStore.user.username }}</template
+                  >
+                  <el-menu-item index="/user"
+                    ><el-icon><Tools /></el-icon>账户设置</el-menu-item
+                  >
+                  <el-menu-item
+                    index="/admin"
+                    v-if="
+                      loginStore.user.power == 1 || loginStore.user.power == 2
+                    "
+                    ><el-icon><Cpu /></el-icon>后台管理</el-menu-item
+                  >
+                  <el-menu-item index="" @click="logOut"
+                    ><el-icon><SwitchButton /></el-icon>退出登录</el-menu-item
+                  >
+                </el-sub-menu>
+                <el-menu-item index="/login" v-else
+                  ><el-icon><UserFilled /></el-icon>注册/登录</el-menu-item
+                >
+              </el-menu>
+            </div>
+          </div>
         </el-header>
-        <el-main class="home-main" :style="{'height': mainHeight}" >
+        <el-main class="home-main" :style="{ height: mainHeight }">
           <el-scrollbar :max-height="mainHeight">
-          <!-- 删除变化需id值，后端加个id为图片名字 -->
-            <Waterfall ref="waterfallRef" :list="imgList" :row-key="imgList.id" :width="300" :gutter="20" :crossOrigin="false" v-infinite-scroll="getMore" infinite-scroll-delay="500" infinite-scroll-distance="200" infinite-scroll-immediate>
+            <!-- 删除变化需id值，后端加个id为图片名字 -->
+            <Waterfall
+              ref="waterfallRef"
+              :list="imgList"
+              :row-key="imgList.id"
+              :width="300"
+              :gutter="20"
+              :crossOrigin="false"
+              v-infinite-scroll="getMore"
+              infinite-scroll-delay="500"
+              infinite-scroll-distance="200"
+              infinite-scroll-immediate
+            >
               <template #item="{ item, url, index }">
                 <div class="card">
-                  <LazyImg :url="item.url" :title="item.imgName"/>
+                  <LazyImg :url="item.url" :title="item.imgName" />
                   <!-- <el-image
                     class="img"
                     :title="item.imgName"
@@ -159,8 +278,11 @@
                     >
                       <!-- <el-icon><Menu /></el-icon> -->
                       <template #reference>
-                        <el-icon class="more" @click="changeCurrentImg(item.imgName,index)"
-                          ><Menu /></el-icon>
+                        <el-icon
+                          class="more"
+                          @click="changeCurrentImg(item.imgName, index)"
+                          ><Menu
+                        /></el-icon>
                       </template>
                       <!-- 对图片的操作 -->
                       <!-- <div class="operate-img" style="display: flex; flex-direction: column; align-items: center;"> -->
@@ -286,22 +408,41 @@
   </el-dialog>
 
   <!-- 删除图片 -->
- <el-dialog v-model="deleteImgDialogVisible" title="你正在删除图片" width="30%" align-center>
+  <el-dialog
+    v-model="deleteImgDialogVisible"
+    title="你正在删除图片"
+    width="30%"
+    align-center
+  >
     <span>
-      你确认要删除 {{strLength(currentImg) > 10 ? currentImg.substring(0,10) + '···' : currentImg}} 吗？
+      你确认要删除
+      {{
+        strLength(currentImg) > 10
+          ? currentImg.substring(0, 10) + '···'
+          : currentImg
+      }}
+      吗？
     </span>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="deleteImgDialogVisible = false">取消</el-button>
-        <el-button type="danger" @click="deleteImg">
-          删除
-        </el-button>
+        <el-button type="danger" @click="deleteImg"> 删除 </el-button>
       </span>
     </template>
   </el-dialog>
 
-<!-- 重命名图片 -->
-  <el-dialog v-model="renameImgDialogVisible" width="30%" :title="'你正在重命名 '+ (strLength(currentImg) > 10 ? currentImg.substring(0,10) + '···' : currentImg)" align-center>
+  <!-- 重命名图片 -->
+  <el-dialog
+    v-model="renameImgDialogVisible"
+    width="30%"
+    :title="
+      '你正在重命名 ' +
+      (strLength(currentImg) > 10
+        ? currentImg.substring(0, 10) + '···'
+        : currentImg)
+    "
+    align-center
+  >
     <el-form>
       <el-form-item label="新的图片名" label-width="100px">
         <el-input v-model.trim="newImgName" autocomplete="off" />
@@ -310,9 +451,7 @@
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="renameImgDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="renameImg">
-          确认
-        </el-button>
+        <el-button type="primary" @click="renameImg"> 确认 </el-button>
       </span>
     </template>
   </el-dialog>
@@ -351,7 +490,7 @@ import { useLoginStore } from '@/store/login'
 import { useImgStore } from '@/store/image'
 import { success, warning, error } from '@/utils/message'
 import { getItem, setItem, removeItem } from '@/utils/localStorage'
-import {strLength} from '@/utils/strLength'
+import { strLength } from '@/utils/strLength'
 import { LazyImg, Waterfall } from 'vue-waterfall-plugin-next'
 import 'vue-waterfall-plugin-next/dist/style.css'
 
@@ -379,7 +518,6 @@ const addFolderName = ref('')
 
 // 切换目录
 const currentIdx = async (index) => {
-
   // vue-waterfall-plugin-next插件会缓存图片链接，导致切换目录时会存在之前目录的图片，故清空
   imgList.value = []
   console.log(index)
@@ -426,10 +564,24 @@ const addFolderFun = () => {
 
 // 是否 折叠面板
 const isCollapse = ref(false)
+// 是否 折叠菜单面板
+const isCollapseMenu = ref(true)
 
 // 打开关闭折叠面板
 const handleOpen = () => {
+  // 如果在isCollapse关闭的时候要打开isCollapse，isCollapseMenu是开启的情况(false为开启情况),则关闭isCollapseMenu
+  if(isCollapseMenu.value === false && isCollapse.value === true) {
+    isCollapseMenu.value = true
+  }
   isCollapse.value = !isCollapse.value
+}
+// 打开关闭折叠菜单面板
+const handleOpenMenu = () => {
+  // 如果在isCollapseMenu关闭的时候要打开isCollapseMenu，isCollapse是开启的情况(false为开启情况),则关闭isCollapse
+  if(isCollapseMenu.value === true && isCollapse.value === false) {
+    isCollapse.value = true
+  }
+  isCollapseMenu.value = !isCollapseMenu.value
 }
 
 const loginStore = useLoginStore()
@@ -468,7 +620,6 @@ const randomImg = async () => {
   if (data.status !== 200) return warning(data.message)
   window.open(data.url)
 }
-
 
 const imgStore = useImgStore()
 // 需要渲染的图片
@@ -588,7 +739,7 @@ onMounted(async () => {
   await homeStore.getFolderList()
   await homeStore.getImgList(homeStore.firstFolder, 40, true, true)
   imgList.value = homeStore.imgList
-  console.log(imgList.value);
+  console.log(imgList.value)
   homeStore.currentFolder = homeStore.firstFolder
 })
 </script>
@@ -731,7 +882,7 @@ body {
     margin-top: 10px;
 
     h6 {
-      flex: .8;
+      flex: 0.8;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
@@ -756,37 +907,89 @@ body {
 }
 
 .operate-img {
-      display: flex;
-      flex-direction: column;
-      align-items: start;
-      width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  width: 100%;
 
-      span {
-        display: flex;
-        justify-content: start;
-        align-items:center;
-        padding: 5px;
-        cursor: pointer;
-        width: 100%;
-      }
+  span {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    padding: 5px;
+    cursor: pointer;
+    width: 100%;
+  }
 
-      span:hover {
-        background: $main-bg;
-        color: #000;
-      }
-    }
+  span:hover {
+    background: $main-bg;
+    color: #000;
+  }
+}
 
-.lazy__img[lazy=loading] {
+.lazy__img[lazy='loading'] {
   padding: 5em 0;
   width: 48px;
 }
 
-.lazy__img[lazy=loaded] {
+.lazy__img[lazy='loaded'] {
   width: 100%;
 }
 
-.lazy__img[lazy=error] {
+.lazy__img[lazy='error'] {
   padding: 5em 0;
   width: 48px;
+}
+
+.mobile-header {
+  display: none;
+}
+
+@media (max-width: 768px) {
+.common-layout {
+  box-sizing: border-box;
+}
+
+  .pc-header {
+    display: none;
+  }
+
+  .mobile-header {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    height: 100%;
+    z-index: 999;
+    
+
+    header {
+      box-sizing: border-box;
+      padding: 0 20px;
+      height: 60px;
+      width: 100%;
+      position: fixed;
+      top: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: #666 .5px solid;
+      z-index: 999;
+    }
+
+    .right-menu {
+      width: 100%;
+      top: 60px;
+      right: 0;
+      z-index: 999;
+    }
+  }
+  // 修改弹窗宽度
+  .el-dialog {
+    width: 80%;
+  }
+  // 修改头部padding
+  .el-header {
+      --el-header-padding: 0;
+    }
 }
 </style>
