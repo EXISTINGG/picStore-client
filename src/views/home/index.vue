@@ -767,7 +767,7 @@ sessionStorage.setItem('alertMessage', 'true')
 onMounted(async () => {
   folderHeight.value = window.innerHeight - folderRef.value.offsetHeight
   mainHeight.value = window.innerHeight - headerRef.value.offsetHeight
-  homeStore.getFolderList()
+  await homeStore.getFolderList()
   await homeStore.getImgList(homeStore.firstFolder, 40, true, true)
   imgList.value = homeStore.imgList
   console.log(imgList.value)

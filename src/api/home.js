@@ -1,7 +1,7 @@
 import {request,requests} from '@/utils/request'
 
 // 获取目录
-export const getFolder = () => requests.get('folder/api/getfolder')
+export const getFolder = () => request.get('folder/api/getfolder')
 // 获取目录下的文件
 export const getFolderFile = (folder,size,refresh) => {
   const params = {

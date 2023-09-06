@@ -9,7 +9,7 @@ const routes = [
     path: '/home', 
     name: 'Home', 
     component: () => import('@/views/home/index.vue'),
-    meta: {title: '首页😀'},
+    meta: {title: '首页😀',keepAlive: true},
     children: [
       
     ]
@@ -17,10 +17,10 @@ const routes = [
 	// { path: '/homes', component: () => import('@/views/home/index.vue') },
   {path: '/test', name: 'test', component: () => import('@/views/Test.vue')},
   {path: '/login', name: 'Login', component: () => import('@/views/login.vue'),meta: {title: '登录😍'},},
-  {path: '/upload', name: 'Upload', component: () => import('@/views/uploadimg/uploadimg.vue'),meta: {title: '图片上传-本地'},},
+  {path: '/upload', name: 'Upload', component: () => import('@/views/uploadimg/uploadimg.vue'),meta: {title: '图片上传-本地'}},
   {path: '/urlupload', name: 'UrlUpload', component: () => import('@/views/uploadimg/urlUpload.vue'),meta: {title: '图片上传-链接'},},
-  {path: '/checkimg', name: 'Checkimg', component: () => import('@/views/uploadimg/checkimg.vue'),meta: {title: '图片检测-本地'},},
-  {path: '/urlcheck', name: 'UrlCheck', component: () => import('@/views/uploadimg/urlCheck.vue'),meta: {title: '图片检测-链接'},},
+  {path: '/checkimg', name: 'Checkimg', component: () => import('@/views/uploadimg/checkimg.vue'),meta: {title: '图片检测-本地'}},
+  {path: '/urlcheck', name: 'UrlCheck', component: () => import('@/views/uploadimg/urlCheck.vue'),meta: {title: '图片检测-链接'}},
   {path: '/user', name: 'User', component: () => import('@/views/user/index.vue'),meta: {title: '用户中心'},},
   {path: '/about', name: 'About', component: () => import('@/views/about.vue'),meta: {title: '关于'},},
   { 
