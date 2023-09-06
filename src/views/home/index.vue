@@ -991,5 +991,9 @@ body {
   .el-header {
       --el-header-padding: 0;
     }
+  // 修改main区域的padding为0，否则滑动时main出区域
+  .el-main {
+    padding: 0;
+  }
 }
 </style>
