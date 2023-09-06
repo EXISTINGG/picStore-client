@@ -952,6 +952,7 @@ body {
 
   .pc-header {
     display: none;
+    z-index: 999;
   }
 
   .mobile-header {
@@ -960,7 +961,6 @@ body {
     width: 100%;
     height: 100%;
     z-index: 999;
-    
 
     header {
       box-sizing: border-box;
@@ -974,6 +974,7 @@ body {
       align-items: center;
       border-bottom: #666 .5px solid;
       z-index: 999;
+      backdrop-filter: saturate(200%) blur(40px);
     }
 
     .right-menu {
