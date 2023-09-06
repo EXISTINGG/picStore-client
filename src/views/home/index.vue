@@ -149,18 +149,24 @@
                     v-show="!isCollapseMenu"
                     @click="handleOpenMenu"
                     :size="28"
-                    ><Expand
+                    ><ArrowUpBold
                   /></el-icon>
                   <el-icon
                     v-show="isCollapseMenu"
                     @click="handleOpenMenu"
                     :size="28"
-                    ><Fold
+                    ><ArrowDownBold
                   /></el-icon>
                 </div>
               </div>
             </header>
-            <div :style="{'position': isCollapseMenu ? '' : 'fixed','display': isCollapseMenu ? 'none' : '',}" class="right-menu">
+            <div
+              :style="{
+                position: isCollapseMenu ? '' : 'fixed',
+                display: isCollapseMenu ? 'none' : ''
+              }"
+              class="right-menu"
+            >
               <el-menu
                 :default-active="activeIndex"
                 class="el-menu-vertical-demo"
@@ -455,6 +461,18 @@
       </span>
     </template>
   </el-dialog>
+
+  <!-- 提示信息 -->
+  <el-dialog v-model="alertMessage" title="警告" width="30%" align-center>
+    <span>本站仅用于演示，会定时清理数据，请勿将本站作为图床使用</span>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button type="primary" @click="alertMessage = false">
+          确定
+        </el-button>
+      </span>
+    </template>
+  </el-dialog>
 </template>
 
 <script setup>
@@ -482,7 +500,9 @@ import {
   Cpu,
   Document,
   Menu,
-  Link
+  Link,
+  ArrowUpBold,
+  ArrowDownBold
 } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useHomeStore } from '@/store/home'
@@ -570,7 +590,7 @@ const isCollapseMenu = ref(true)
 // 打开关闭折叠面板
 const handleOpen = () => {
   // 如果在isCollapse关闭的时候要打开isCollapse，isCollapseMenu是开启的情况(false为开启情况),则关闭isCollapseMenu
-  if(isCollapseMenu.value === false && isCollapse.value === true) {
+  if (isCollapseMenu.value === false && isCollapse.value === true) {
     isCollapseMenu.value = true
   }
   isCollapse.value = !isCollapse.value
@@ -578,7 +598,7 @@ const handleOpen = () => {
 // 打开关闭折叠菜单面板
 const handleOpenMenu = () => {
   // 如果在isCollapseMenu关闭的时候要打开isCollapseMenu，isCollapse是开启的情况(false为开启情况),则关闭isCollapse
-  if(isCollapseMenu.value === true && isCollapse.value === false) {
+  if (isCollapseMenu.value === true && isCollapse.value === false) {
     isCollapse.value = true
   }
   isCollapseMenu.value = !isCollapseMenu.value
@@ -732,6 +752,17 @@ const renameImg = () => {
       }
     })
 }
+
+// 提示信息，仅使用一次
+const alertMessage = ref(false)
+// 在页面加载时检查sessionStorage中的标志
+const storedalertMessage = sessionStorage.getItem('alertMessage')
+if (storedalertMessage !== 'true') {
+  // 如果标志不为true，则提示
+  alertMessage.value = true
+}
+// 弹出过提示信息
+sessionStorage.setItem('alertMessage', 'true')
 
 onMounted(async () => {
   folderHeight.value = window.innerHeight - folderRef.value.offsetHeight
@@ -946,9 +977,9 @@ body {
 }
 
 @media (max-width: 768px) {
-.common-layout {
-  box-sizing: border-box;
-}
+  .common-layout {
+    box-sizing: border-box;
+  }
 
   .pc-header {
     display: none;
@@ -972,7 +1003,7 @@ body {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: #666 .5px solid;
+      border-bottom: #666 0.5px solid;
       z-index: 999;
       backdrop-filter: saturate(200%) blur(40px);
     }
@@ -990,8 +1021,8 @@ body {
   }
   // 修改头部padding
   .el-header {
-      --el-header-padding: 0;
-    }
+    --el-header-padding: 0;
+  }
   // 修改main区域的padding为0，否则滑动时main出区域
   .el-main {
     padding: 0;
