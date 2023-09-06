@@ -100,16 +100,11 @@ const randomImg = async () => {
 // }
 
 .el-menu--popup {
-    // z-index: 100;
     display: flex;
     flex-direction: column;
     align-items: space-between;
     justify-content: center;
-    min-width: 100px;
-    // border: none;
-    // padding: 0.13333rem 0;
-    // border-radius: var(--el-border-radius-small);
-    // box-shadow: var(--el-box-shadow-light);
+    min-width: 100px;   
 }
 
 

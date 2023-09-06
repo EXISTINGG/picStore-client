@@ -8,12 +8,13 @@ const routes = [
   {
     path: '/home', 
     name: 'Home', 
-    component: () => import('@/views/Home.vue'),
+    component: () => import('@/views/home/index.vue'),
     meta: {title: '首页😀'},
     children: [
       
     ]
   },
+	// { path: '/homes', component: () => import('@/views/home/index.vue') },
   {path: '/test', name: 'test', component: () => import('@/views/Test.vue')},
   {path: '/login', name: 'Login', component: () => import('@/views/login.vue'),meta: {title: '登录😍'},},
   {path: '/upload', name: 'Upload', component: () => import('@/views/uploadimg/uploadimg.vue'),meta: {title: '图片上传-本地'},},
@@ -49,7 +50,7 @@ const router = createRouter({
 // 全局前置守卫
 router.beforeEach((to, from, next) => {
   // 如果登录后要去登录页，则返回原页面
-  if(to.path == 'Login' && getItem('TOKEN') && getItem('user')) next(from.path)
+  if(to.name == 'Login' && getItem('TOKEN') && getItem('user')) next(from.path)
   // 如果没有登录去用户中心页面,则返回
   if(to.name == 'User' && !getItem('TOKEN') && !getItem('user')) next(from.path)
   // 去管理页面
