@@ -76,7 +76,7 @@ const beforTitle = 'Existing图床'
 // 全局后置守卫
 router.afterEach((to,from,next) => {
   document.title = `${beforTitle} | ${to.meta.title || ''}`
-  // 首页保持活动，登陆后不会及时显示用户名，刷新
+  // 首页保持活动，登录后不会及时显示用户名，刷新
   if(from.name === 'Login' && to.name === 'Home') {
     window.location.reload();
   }
