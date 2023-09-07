@@ -609,6 +609,7 @@ input {
 .pre-box {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   /* 宽度为大盒子的一半 */
   width: 50%;
@@ -629,7 +630,7 @@ input {
 
 /* 滑动盒子的标题 */
 .pre-box h1 {
-  margin-top: 150px;
+  // margin-top: 150px;
   text-align: center;
   /* 文字间距 */
   letter-spacing: 5px;

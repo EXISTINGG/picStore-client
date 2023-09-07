@@ -15,7 +15,6 @@ const routes = [
     ]
   },
 	// { path: '/homes', component: () => import('@/views/home/index.vue') },
-  {path: '/test', name: 'test', component: () => import('@/views/Test.vue')},
   {path: '/login', name: 'Login', component: () => import('@/views/login.vue'),meta: {title: '登录😍'},},
   {path: '/upload', name: 'Upload', component: () => import('@/views/uploadimg/uploadimg.vue'),meta: {title: '图片上传-本地'}},
   {path: '/urlupload', name: 'UrlUpload', component: () => import('@/views/uploadimg/urlUpload.vue'),meta: {title: '图片上传-链接'},},
