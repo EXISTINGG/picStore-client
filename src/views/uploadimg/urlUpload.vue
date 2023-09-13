@@ -72,7 +72,6 @@ const submitUrl = () => {
   const urlList = imgUrl.value.trim().split('\n')
   // 循环数组,添加属性
   urlList.map(async (url, i) => {
-    console.log(url)
 
     const timestamp = Date.now()
     const random = Math.floor(Math.random() * 1000000) // 生成随机数
@@ -108,13 +107,11 @@ const submitUrl = () => {
             ((progressEvent.loaded / progressEvent.total) * 100) | 0,
             10
           )
-          console.log(complete)
 
           changUpLoadImgList(urlObj, 'checkProgress', complete)
         }
       }
     )
-    console.log(data)
     //
     if (data.status !== 200) {
       changUpLoadImgList(urlObj, 'checkImg', 'exception')
@@ -129,7 +126,6 @@ const submitUrl = () => {
       changUpLoadImgList(urlObj, 'checkImg', 'success')
     }
 
-    console.log(selectFolder.value, [url])
 
     // 开始上传
     const { data: uploadRes } = await axios.post(
@@ -144,13 +140,11 @@ const submitUrl = () => {
             ((progressEvent.loaded / progressEvent.total) * 100) | 0,
             10
           )
-          console.log(complete)
 
           changUpLoadImgList(urlObj, 'uploadProgress', complete)
         }
       }
     )
-    console.log(uploadRes)
     //
     if (uploadRes.status !== 200) {
       changUpLoadImgList(urlObj, 'upLoadImg', 'exception')

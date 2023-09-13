@@ -456,7 +456,6 @@ const RegGetCode = () => {
   // waitTime每秒减一
     intervalId = setInterval(() => {
       waitTime.value--
-      console.log('yx');
     }, 1000);
 
   timerId = setTimeout(() => {
@@ -522,7 +521,6 @@ const submitLoginForm = async (formEl) => {
       if(loginActive.value === 0) {
         loginStore.loginByUserNameFun(userNameLoginForm).then(() => {
           // 登陆成功，跳转到首页
-          console.log('loginStore.isLogin',loginStore.isLogin);
           if(loginStore.isLogin) {setTimeout(() => {router.push('/home')}, 1000);}
         });
       } else if (loginActive.value === 1) {
@@ -545,7 +543,6 @@ const selectLogin = (i) => {
 
 // 切换登录或注册
 const mySwitch = () => {
-  console.log(flag.value);
     if (flag.value) {
         preboxRef.value.style.transform = "translateX(100%)"
         preboxRef.value.style.backgroundColor = "#c9e0ed"

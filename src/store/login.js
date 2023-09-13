@@ -28,7 +28,6 @@ export const useLoginStore = defineStore('login', {
     // 获取验证码
     async getCodeValue(email) {
       const { data } = await getCode(email)
-      console.log(data)
       if (data.status !== 200) return warning('获取验证码失败')
       success('获取验证码成功')
     },
@@ -42,7 +41,6 @@ export const useLoginStore = defineStore('login', {
         regForm.username,
         regForm.password
       )
-      console.log(data)
       if (data.status !== 200) return warning(data.message || '注册失败')
       success('注册成功')
       this.isRegister = true
@@ -55,7 +53,6 @@ export const useLoginStore = defineStore('login', {
         userNameForm.password,
         isadmin
       )
-      console.log(data)
       // 处理数据
       this.processData(data)
     },
@@ -67,7 +64,6 @@ export const useLoginStore = defineStore('login', {
         emailForm.password,
         isadmin
       )
-      console.log(data)
       // 处理数据
       this.processData(data)
     },

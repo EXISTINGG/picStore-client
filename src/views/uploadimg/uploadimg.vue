@@ -62,7 +62,6 @@ const uploadImgList = ref([])
 
 // 增加或替换值
 const changUpLoadImgList = (file, fileitem, value) => {
-  console.log(file)
   uploadImgList.value.map((item) => {
     if (item.uid === file.uid) {
       item[fileitem] = value
@@ -86,7 +85,6 @@ const beforeUpload = async (file) => {
     return false
   }
 
-  console.log(file)
   if (!/^image\//.test(file.type)) {
     warning('只允许上传图片文件')
     return false
@@ -97,7 +95,6 @@ const beforeUpload = async (file) => {
 
   // 创建Blob对象
   const blob = new Blob([file], { type: 'text/plain' })
-  console.log(blob)
   // 将创建的Blob对象绑定到一个临时URL上(缩略图url)
   const blobUrl = URL.createObjectURL(blob)
 
@@ -137,14 +134,13 @@ const beforeUpload = async (file) => {
           ((progressEvent.loaded / progressEvent.total) * 100) | 0,
           10
         )
-        console.log(progressEvent.loaded, progressEvent.total, complete)
+        // console.log(progressEvent.loaded, progressEvent.total, complete)
 
         changUpLoadImgList(file, 'checkProgress', complete)
       }
     }
   )
 
-  console.log(data)
   if (data.status !== 200) {
     warning('图片检测出错')
     changUpLoadImgList(file, 'checkImg', 'exception')
@@ -165,14 +161,12 @@ const beforeUpload = async (file) => {
 }
 
 const httpRequest = async (http) => {
-  console.log(http.file)
   const { file } = http
 
   const formData = new FormData()
   // 编码上传文件名,防止中文乱码(后端解码返回)
   const filename = encodeURIComponent(file.name)
   formData.append('file', file, filename)
-  console.log(selectFolder.value)
   formData.append('folder', selectFolder.value)
 
   const { data } = await axios.post(
@@ -188,18 +182,11 @@ const httpRequest = async (http) => {
           ((progressEvent.loaded / progressEvent.total) * 100) | 0,
           10
         )
-        console.log(complete)
-        // uploadImgList.value.map((item) => {
-        //   if (item.uid === file.uid) {
-        //     item.uploadProgress = complete
-        //   }
-        // })
+        
         changUpLoadImgList(file, 'uploadProgress', complete)
       }
     }
   )
-
-  console.log(data)
 
   if (data.status !== 200) {
     changUpLoadImgList(file, 'upLoadImg', 'exception')

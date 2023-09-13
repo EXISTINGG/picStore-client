@@ -64,7 +64,6 @@ const filterTableData = computed(() =>
 
 // 确认修改权限
 const changePower = (index, row) => {
-  console.log(index, row)
   if(row.power == 1) return warning('不可操作')
   adminStore.changeUserFun(row)
 }

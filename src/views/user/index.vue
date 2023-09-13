@@ -202,7 +202,6 @@ const summitUserInfo = () => {
   if (formLabelAlign.name === '') return warning('用户名不能为空')
   userStore.updateInfoFun(formLabelAlign.name)
 }
-console.log(11, userStore.isUpdatePwd)
 
 // 确认密码
 const submitUpdatePwdForm = async (formEl) => {

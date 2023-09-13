@@ -107,7 +107,6 @@ const newImgName = ref('')
 
 // 获取更多图片
 const getMore = () => {
-  console.log('more')
   homeStore.getImgList(homeStore.currentFolder, 20)
 }
 // 预览图片
@@ -151,7 +150,7 @@ const deleteImg = () => {
 }
 // 重命名图片
 const renameImg = () => {
-  console.log(currentImg.value,newImgName.value,homeStore.currentFolder);
+  // console.log(currentImg.value,newImgName.value,homeStore.currentFolder);
   if(newImgName.value === '') return warning('请输入有效字符')
   imgStore.renameImgFun(homeStore.currentFolder,currentImg.value,newImgName.value).then(() => {
     if(imgStore.isRename) {

@@ -37,16 +37,13 @@ export const useHomeStore = defineStore('home', {
       const {data} = await getFolder()
       if(data.status !== 200) return error('获取目录失败')
       this.folderList = data.allFolder
-      console.log(this.folderList);
     },
     
     // 获取目录下的文件
     async getImgList(folder,size,isRefresh,changeFolder) {
       if(isRefresh || changeFolder) this.disabledLoad = false
       if(this.disabledLoad) return warning('没有更多了')
-      console.log(1212,folder);
       const {data} = await getFolderFile(folder,size,isRefresh)
-      console.log(data.data);
       if(data.status !== 200) return error('获取图片失败')
       if(data.data.files.length === 0) {
         this.disabledLoad = true
@@ -65,7 +62,6 @@ export const useHomeStore = defineStore('home', {
     // 新建目录
     async addFolderFun(folder) {
       const {data} = await addFolder(folder)
-      console.log(data);
       if(data.status !== 200) return error(data.message || '新建目录失败')
       success(data.message)
       this.getFolderList()

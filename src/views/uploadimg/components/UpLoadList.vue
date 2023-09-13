@@ -36,8 +36,6 @@ const props = defineProps({
   }
 })
 
-console.log(props);
-
 // 移除图片
 const removeImg = (file) => {
   const index = props.uploadList.findIndex(item => item.uid === file.uid);
@@ -63,7 +61,6 @@ const copyImgUrl = async (url) => {
 onBeforeUnmount(() => {
   props.uploadList.forEach(item => {
     if (item.blobUrl) {
-      console.log('清除',item.blobUrl);
       URL.revokeObjectURL(item.blobUrl);
     }
   });

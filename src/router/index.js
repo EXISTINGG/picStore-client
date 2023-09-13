@@ -60,7 +60,6 @@ router.beforeEach((to, from, next) => {
       return next('/login')
       // 登录但账号权限不足
     } else if (getItem('TOKEN') && getItem('user').power != 1 && getItem('user').power != 2) {
-      console.log(getItem('user').power);
       warning('请使用管理员账号登录')
       return next(from.path)
     } else {

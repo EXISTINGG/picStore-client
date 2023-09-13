@@ -40,10 +40,8 @@ const topMenuRef = ref(null)
 
 onMounted(async () => {
   await homeStore.getFolderList()
-  console.log(homeStore.firstFolder)
   await homeStore.getImgList(homeStore.firstFolder, 40, true, true)
   homeStore.currentFolder = homeStore.firstFolder
-  console.log(333, homeStore.currentFolder)
 
   homeStore.topMenuH = topMenuRef.value.offsetHeight
 

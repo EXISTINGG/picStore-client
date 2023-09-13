@@ -24,7 +24,6 @@ export const useUserStore = defineStore('user', {
   actions: {
     async updateInfoFun(username) {
       const {data} = await updateInfo(username)
-      console.log(data,data.status);
       if(data.status !== 200) return warning(data.message || '更新信息失败')
       success('更新信息成功')
       setItem('TOKEN',data.data.token)
@@ -35,7 +34,6 @@ export const useUserStore = defineStore('user', {
 
     async upDatePwdFun(form) {
       const {data} = await updatepwd(form.oldPassword,form.password)
-      console.log(data);
       if(data.status !== 200) return warning(data.message || '修改密码失败')
       this.isUpdatePwd = true
       // success('修改密码成功')

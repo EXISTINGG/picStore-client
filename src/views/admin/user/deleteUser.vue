@@ -71,7 +71,6 @@ const filterTableData = computed(() =>
 
 // 恢复某个注销的用户
 const restorThisUser = (index, row) => {
-  console.log(index, row)
   adminStore.restoreUserFun(row).then(() => {
     if (adminStore.isResoterSuccess) {
       adminStore.getsignOutUserListFun()
@@ -80,7 +79,6 @@ const restorThisUser = (index, row) => {
 }
 // 删除某个注销的用户
 const delThisUser = (index, row) => {
-  console.log(index, row)
   adminStore.delUserFun(row).then(() => {
     if (adminStore.isDelSuccess) {
       adminStore.getsignOutUserListFun()

@@ -97,12 +97,10 @@ const submitUrl = async () => {
             ((progressEvent.loaded / progressEvent.total) * 100) | 0,
             10
           )
-          console.log(complete)
           uploadImgObj.value.checkProgress = complete
         }
       }
     )
-    console.log(data)
 
     // 加载完成
     isLoading = false

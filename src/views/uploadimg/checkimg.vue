@@ -127,8 +127,6 @@ const httpRequest = async (http) => {
     // 该图片的加载状态： false
     uploadImgObj.value.isLoading = false
 
-    console.log(data)
-
     if (data.status !== 200) {
       uploadImgObj.value.checkImg = 'exception'
       // 不允许上传

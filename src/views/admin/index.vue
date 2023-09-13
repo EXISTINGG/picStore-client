@@ -104,7 +104,6 @@ const route = useRoute()
 const loginStore = useLoginStore()
 
 const defaultRouter = ref(route.path)
-console.log(defaultRouter.value)
 // 是否 折叠面板
 const isCollapse = ref(false)
 // 是否是全屏

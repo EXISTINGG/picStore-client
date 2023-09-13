@@ -46,7 +46,6 @@
               mode="horizontal"
               router
               :ellipsis="false"
-              @select="handleSelect"
             >
               <el-menu-item>
                 <div class="header-left">
@@ -172,7 +171,6 @@
                 class="el-menu-vertical-demo"
                 router
                 :ellipsis="false"
-                @select="handleSelect"
               >
                 <el-sub-menu index="1">
                   <template #title
@@ -262,7 +260,7 @@
             >
               <template #item="{ item, url, index }">
                 <div class="card">
-                  <LazyImg :url="item.url" :title="item.imgName" />
+                  <LazyImg :url="item.url" />
                   <!-- <el-image
                     class="img"
                     :title="item.imgName"
@@ -275,7 +273,7 @@
                     @click="previewImg(index)"
                   /> -->
                   <span class="text-box">
-                    <h6>{{ item.imgName }}</h6>
+                    <h6  :title="item.imgName">{{ item.imgName }}</h6>
                     <el-popover
                       placement="right"
                       :width="150"
@@ -540,7 +538,6 @@ const addFolderName = ref('')
 const currentIdx = async (index) => {
   // vue-waterfall-plugin-next插件会缓存图片链接，导致切换目录时会存在之前目录的图片，故清空
   imgList.value = []
-  console.log(index)
   homeStore.currentFolder = index
   await homeStore.getImgList(index, 40, true, true)
   imgList.value = homeStore.imgList
@@ -607,9 +604,7 @@ const handleOpenMenu = () => {
 const loginStore = useLoginStore()
 
 const activeIndex = ref('1')
-const handleSelect = (key, keyPath) => {
-  console.log(key, keyPath)
-}
+
 const randomImgUrl = ref('')
 
 // 是否是登录状态
@@ -680,7 +675,6 @@ const newImgName = ref('')
 
 // 获取更多图片
 const getMore = () => {
-  console.log('more')
   homeStore.getImgList(homeStore.currentFolder, 20)
 }
 // 预览图片
@@ -728,7 +722,7 @@ const deleteImg = () => {
 }
 // 重命名图片
 const renameImg = () => {
-  console.log(currentImg.value, newImgName.value, homeStore.currentFolder)
+  // console.log(currentImg.value, newImgName.value, homeStore.currentFolder)
   if (newImgName.value === '') return warning('请输入有效字符')
   imgStore
     .renameImgFun(homeStore.currentFolder, currentImg.value, newImgName.value)
@@ -770,7 +764,6 @@ onMounted(async () => {
   await homeStore.getFolderList()
   await homeStore.getImgList(homeStore.firstFolder, 40, true, true)
   imgList.value = homeStore.imgList
-  console.log(imgList.value)
   homeStore.currentFolder = homeStore.firstFolder
 })
 </script>
@@ -904,7 +897,15 @@ body {
 }
 
 .home-main {
-  // height: 90vh;
+
+  img {
+    transition: transform 0.5s ease;
+  }
+
+  img:hover {
+    transform: scale(1.2);
+  }
+  
   .text-box {
     display: flex;
     justify-content: space-between;

@@ -50,7 +50,6 @@ const filterTableData = computed(() =>
 
 // 确认修改权限
 const changeApi = (index, row) => {
-  console.log(index, row)
   adminStore.changeApiFun(row)
 }
 

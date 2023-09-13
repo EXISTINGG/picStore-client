@@ -141,7 +141,6 @@ const getFolderHeight = () => (folderHeight.value = window.innerHeight)
 
 const currentIdx = (index) => {
   // imgStore.ImgList = []
-  console.log(index)
   homeStore.currentFolder = index
   homeStore.getImgList(index, 40, true, true)
 }
