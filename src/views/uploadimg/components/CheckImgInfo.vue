@@ -133,10 +133,11 @@ const calculateMaxHeight = () => {
         display: flex;
         flex-direction: column;
         margin-bottom: 10px;
+        width: 100%;
 
         .img-name {
           margin: 0 auto;
-          width: 150px;
+          width: 100%;
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;

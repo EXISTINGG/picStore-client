@@ -258,7 +258,7 @@ const deleteAccount = () => {
 .right-content {
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.5);
-  backdrop-filter: saturate(100%) blur(10px);
+  backdrop-filter: saturate(100%) blur(3px);
 }
 
 .header {

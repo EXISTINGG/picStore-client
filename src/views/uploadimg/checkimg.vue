@@ -49,7 +49,7 @@ const beforeUpload = async (file) => {
     return false
   }
 
-  uploadImgObj.value = {}
+  // uploadImgObj.value = {}
 
   // 创建Blob对象
   const blob = new Blob([file], { type: 'text/plain' })

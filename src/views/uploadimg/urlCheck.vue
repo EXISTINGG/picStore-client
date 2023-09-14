@@ -54,12 +54,10 @@ const submitUrl = async () => {
     source = axios.CancelToken.source()
   }
 
-  // 正在加载
-  isLoading = true
-  // 该图片的加载状态
-  uploadImgObj.value.isLoading = true
+  
+  // uploadImgObj.value = {}
+  
 
-  uploadImgObj.value = {}
 
   const timestamp = Date.now()
   const random = Math.floor(Math.random() * 1000000) // 生成随机数
@@ -84,6 +82,10 @@ const submitUrl = async () => {
   }, 500)
 
   try {
+    // 正在加载
+    isLoading = true
+    // 该图片的加载状态
+    uploadImgObj.value.isLoading = true
     //
     const { data } = await axios.post(
       `https://nsfwapi.hxq-001.top/nsfw-link`,
