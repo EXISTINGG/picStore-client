@@ -536,6 +536,7 @@ const addFolderName = ref('')
 
 // 切换目录
 const currentIdx = async (index) => {
+  if(index === homeStore.currentFolder) return
   // vue-waterfall-plugin-next插件会缓存图片链接，导致切换目录时会存在之前目录的图片，故清空
   imgList.value = []
   homeStore.currentFolder = index
@@ -770,6 +771,9 @@ onMounted(async () => {
 
 <style lang="scss">
 $main-bg: #409eff;
+.el-dialog__header {
+  overflow: hidden
+}
 
 body {
   margin: 0;
