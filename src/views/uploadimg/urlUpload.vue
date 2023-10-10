@@ -42,7 +42,8 @@ import { useHomeStore } from '@/store/home'
 import { useImgStore } from '@/store/image'
 import { getItem } from '@/utils/localStorage'
 import { success, warning, error } from '@/utils/message'
-import UpLoadList from './components/uploadlist.vue'
+// import UpLoadList from './components/Uploadlist.vue'
+import UpLoadList from '@/views/uploadimg/components/Uploadlist.vue'
 
 const homeStore = useHomeStore()
 const imageStore = useImgStore()

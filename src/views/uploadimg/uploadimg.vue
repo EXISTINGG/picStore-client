@@ -53,7 +53,7 @@ import { UploadFilled } from '@element-plus/icons-vue'
 import { getItem } from '@/utils/localStorage'
 import { useHomeStore } from '@/store/home'
 import { success, warning, error } from '@/utils/message'
-import UpLoadList from './components/uploadlist.vue'
+import UpLoadList from './components/Uploadlist.vue'
 
 const homeStore = useHomeStore()
 
