@@ -179,6 +179,7 @@ const httpRequest = async (http) => {
   formData.append('image', file, filename)
   formData.append('id', selectAlbum.value.id)
   formData.append('album_name', selectAlbum.value.album)
+  formData.append('filename', filename)
 
   const { data } = await axios.post(
     'https://picapi.hxq-001.top/image/upload',
