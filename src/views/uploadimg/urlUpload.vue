@@ -1,6 +1,6 @@
 <template>
   <div class="urlupload-body">
-    <div class="upload-folder-url">
+    <div class="upload-album-url">
       <el-input
         v-model="imgUrl"
         :autosize="{ minRows: 10, maxRows: 15 }"
@@ -9,15 +9,19 @@
       />
 
       <div class="select-submit">
-        <div class="folder">
-          <h3>选择目录:</h3>
-          <el-select v-model="selectFolder" placeholder="目录">
-            <el-option
-              v-for="item in homeStore.folderList"
-              :key="item"
-              :value="item"
-            />
-          </el-select>
+        <div class="album">
+          <h3>选择相册:</h3>
+          <el-select v-model="selectAlbum.album" placeholder="相册" @change="changeOption">
+          <el-option
+            v-for="item in homeStore.albumList"
+            :key="item.id"
+            :label="item.name"
+            :value="item"
+          >
+            <span style="float: left">{{ item.name }}</span>
+            <span style="float: right;color: var(--el-text-color-secondary);font-size: 13px;">{{ item.privacy == 0 ? '公共' : '私人' }}</span>
+          </el-option>
+        </el-select>
         </div>
 
         <div class="btn-area">
@@ -38,7 +42,7 @@ import { useHomeStore } from '@/store/home'
 import { useImgStore } from '@/store/image'
 import { getItem } from '@/utils/localStorage'
 import { success, warning, error } from '@/utils/message'
-import UpLoadList from './components/UpLoadList.vue'
+import UpLoadList from './components/uploadlist.vue'
 
 const homeStore = useHomeStore()
 const imageStore = useImgStore()
@@ -47,8 +51,8 @@ const imageStore = useImgStore()
 const imgUrl = ref('')
 // 链接数组
 const imgUrlArr = ref([])
-// 选择的目录
-const selectFolder = ref(homeStore.firstFolder)
+// 选择的相册
+const selectAlbum = ref({album: homeStore.firstAlbum, id: homeStore.firstAlbumId})
 
 // 增加或替换值
 const changUpLoadImgList = (file, fileitem, value) => {
@@ -59,6 +63,12 @@ const changUpLoadImgList = (file, fileitem, value) => {
   })
 }
 
+// 选择相册
+const changeOption = (e) => {
+  selectAlbum.value.id = e.id
+  selectAlbum.value.album = e.name
+}
+
 // 清空链接
 const clearUrl = () => imgUrl.value = ''
 
@@ -67,7 +77,7 @@ const timer = ref(null)
 // 提交链接
 const submitUrl = () => {
   if (imgUrl.value === '') return warning('请输入链接')
-  if (selectFolder.value === '') return warning('请选择目录')
+  if (selectAlbum.value.album === '') return warning('请选择相册')
   // 转换为数组
   const urlList = imgUrl.value.trim().split('\n')
   // 循环数组,添加属性
@@ -126,11 +136,12 @@ const submitUrl = () => {
       changUpLoadImgList(urlObj, 'checkImg', 'success')
     }
 
-
+    // console.table({id :selectAlbum.value.id, album_name: selectAlbum.value.album, imgUrl: url});
     // 开始上传
     const { data: uploadRes } = await axios.post(
-      'https://picapi.hxq-001.top/file/urlfile',
-      { folder: selectFolder.value, fileUrls: [url] },
+      'https://picapi.hxq-001.top/image/netimg',
+      // 'http://127.0.0.1/image/netimg',
+      { id :String(selectAlbum.value.id), album_name: selectAlbum.value.album, imgUrl: url },
       {
         headers: {
           Authorization: getItem('TOKEN')
@@ -145,6 +156,7 @@ const submitUrl = () => {
         }
       }
     )
+
     //
     if (uploadRes.status !== 200) {
       changUpLoadImgList(urlObj, 'upLoadImg', 'exception')
@@ -154,12 +166,12 @@ const submitUrl = () => {
     success(uploadRes.message || '文件上传成功')
     changUpLoadImgList(urlObj, 'upLoadImg', 'success')
 
-    changUpLoadImgList(urlObj, 'imgUrl', uploadRes.url[0])
+    changUpLoadImgList(urlObj, 'imgUrl', uploadRes.data.file_url)
   })
 }
 
 onMounted(() => {
-  homeStore.getFolderList()
+  homeStore.getAlbumList()
 })
 </script>
 

@@ -11,4 +11,24 @@ export const updatepwd = (oldPwd,newPwd) => {
   return request.post('/userinfo/updatepwd',data)
 }
 // 注销账号
-export const deleteUser = () => request.post('/userinfo/deleteuser')
+export const deleteUser = () => request.post('/userinfo/markdeleteuser')
+
+// 获取更换邮箱的验证码
+export const getChangeEmailCode = (newEmail,password) => {
+  const data = {
+    newEmail,
+    password
+  }
+  console.log(data);
+  return request.post('/userinfo/updateemailcode',data)
+}
+
+// 更换邮箱
+export const changeEmail = (email,code) => {
+  const data = {
+    email,
+    code
+  }
+  return request.post('/userinfo/updateemail',data)
+}
+

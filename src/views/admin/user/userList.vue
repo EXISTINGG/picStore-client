@@ -5,20 +5,20 @@
     <el-table-column label="邮箱" prop="email" />
     <el-table-column label="注册日期">
     <template #default="scope">
-        {{formatTimestamp(scope.row.regdate)}}
+        {{formatTimestamp(scope.row.registration_time)}}
       </template>
     </el-table-column>
     <el-table-column label="角色" width="180">
       <template #default="scope">
-        <el-tag  v-show="scope.row.power == 1">超级管理员</el-tag>
-        <el-tag  type="success" v-show="scope.row.power == 2">管理员</el-tag>
-        <el-tag  type="warning" v-show="scope.row.power == 3">普通用户</el-tag>
-        <el-tag  type="info" v-show="scope.row.power == 4">禁用功能</el-tag>
+        <el-tag  v-show="scope.row.permissions == 1">超级管理员</el-tag>
+        <el-tag  type="success" v-show="scope.row.permissions == 2">管理员</el-tag>
+        <el-tag  type="warning" v-show="scope.row.permissions == 3">普通用户</el-tag>
+        <el-tag  type="info" v-show="scope.row.permissions == 4">禁用功能</el-tag>
       </template>
     </el-table-column>
     <el-table-column label="权限" width="180">
       <template #default="scope">
-        <el-select v-model="scope.row.power" placeholder="Select">
+        <el-select v-model="scope.row.permissions" placeholder="Select">
           <el-option v-for="item in 4" :key="item" :value="item" />
         </el-select>
       </template>
@@ -58,13 +58,13 @@ const filterTableData = computed(() =>
     (data) =>
       !search.value ||
       data.username.includes(search.value) ||
-      data.email.includes(search.value) || data.power.includes(search.value)
+      data.email.includes(search.value) || data.permissions.includes(search.value)
   )
 )
 
 // 确认修改权限
 const changePower = (index, row) => {
-  if(row.power == 1) return warning('不可操作')
+  if(row.permissions == 1) return warning('不可操作')
   adminStore.changeUserFun(row)
 }
 

@@ -12,10 +12,21 @@
           class="el-menu-vertical-demo"
           background-color="#191a23"
           text-color="#ffffff"
+          unique-opened
           :collapse-transition="false"
           :collapse="isCollapse"
           router
-        >
+        > 
+          <!-- 系统管理 -->
+          <el-sub-menu index="/admin/system">
+            <template #title>
+              <el-icon><Cpu /></el-icon>
+              <span>系统管理</span>
+            </template>
+            <el-menu-item index="/admin/system/systemset">系统设置</el-menu-item>
+          </el-sub-menu>
+
+          <!-- 用户管理 -->
           <el-sub-menu index="/admin/user">
             <template #title>
               <el-icon><UserFilled /></el-icon>
@@ -26,6 +37,8 @@
               >已注销用户</el-menu-item
             >
           </el-sub-menu>
+
+          <!-- api管理 -->
           <el-sub-menu index="/admin/api/">
             <template #title>
               <el-icon><Platform /></el-icon>
@@ -33,6 +46,19 @@
             </template>
             <el-menu-item index="/admin/api/apilist">API列表</el-menu-item>
           </el-sub-menu>
+
+          <!-- 图片管理 -->
+          <el-sub-menu index="/admin/img/">
+            <template #title>
+              <el-icon><PictureFilled /></el-icon>
+              <span>图片管理</span>
+            </template>
+            <el-menu-item index="/admin/img/albumlist">相册列表</el-menu-item>
+            <el-menu-item index="/admin/img/imglist"
+              >图片列表</el-menu-item
+            >
+          </el-sub-menu>
+
         </el-menu>
       </el-aside>
 
@@ -48,11 +74,6 @@
                 ><Expand
               /></el-icon>
             </div>
-            <!-- <el-breadcrumb :separator-icon="ArrowRight" class="breadcrumb">
-              <el-breadcrumb-item :to="{ path: '/admin/user/userlist' }"
-                >homepage</el-breadcrumb-item
-              >
-            </el-breadcrumb> -->
           </div>
 
           <div class="header-right">
@@ -67,7 +88,7 @@
               /></el-icon>
             </span>
             <div class="avator-box">
-              <el-avatar :size="40" :src="randomImgUrl"> </el-avatar>
+              <el-avatar :size="40" src="https://s3.us-east-005.backblazeb2.com/ExistingPicStore/16968395590311696409795074001circle.png"> </el-avatar>
               <i>{{loginStore.user.username}}</i>
             </div>
           </div>
@@ -84,17 +105,17 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import axios from 'axios'
+import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import {
   UserFilled,
   Platform,
   Fold,
   Expand,
-  ArrowRight,
   House,
-  FullScreen
+  FullScreen,
+  Cpu,
+  PictureFilled
 } from '@element-plus/icons-vue'
 import {useLoginStore} from '@/store/login'
 
@@ -123,18 +144,15 @@ const handleOpen = () => {
   isCollapse.value = !isCollapse.value
 }
 
-const randomImgUrl = ref('')
-const randomImg = async () => {
-  const { data } = await axios.get(
-    'https://picapi.hxq-001.top/file/api/randomimg'
-  )
-  if (data.status !== 200) return
-  randomImgUrl.value = data.url
-}
+// const randomImgUrl = ref('')
+// const randomImg = async () => {
+//   const { data } = await axios.get(
+//     'https://picapi.hxq-001.top/file/api/randomimg'
+//   )
+//   if (data.status !== 200) return
+//   randomImgUrl.value = data.url
+// }
 
-onMounted(() => {
-  randomImg()
-})
 </script>
 
 <style lang="scss">

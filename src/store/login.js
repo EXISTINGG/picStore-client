@@ -3,7 +3,9 @@ import {
   getCode,
   registerAccount,
   loginByUserName,
-  loginByEmail
+  loginByEmail,
+  getResetPwdCode,
+  resetPwd
 } from '@/api/login'
 import { success, warning, error } from '@/utils/message'
 import { getItem, setItem, removeItem } from '@/utils/localStorage'
@@ -17,6 +19,8 @@ export const useLoginStore = defineStore('login', {
       isRegister: false,
       // 是否登录
       isLogin: false,
+      // 重置密码成功?
+      isResetPwd: false,
     }
   },
 
@@ -84,6 +88,26 @@ export const useLoginStore = defineStore('login', {
       await removeItem('TOKEN')
       await removeItem('user')
       this.isLogin = false
-    }
+    },
+
+    // 忘记密码,获取重置密码的验证码
+    async getResetPwdCodeFun(email) {
+      const {data} = await getResetPwdCode(email)
+      if (data.status !== 200) return warning(data.message || '获取失败')
+      success('获取成功')
+    },
+
+     // 重置密码
+     async resetPwdFun(resetForm, emailFrom) {
+      this.isResetPwd = false
+      const { data } = await resetPwd(
+        emailFrom.email,
+        resetForm.code,
+        resetForm.password
+      )
+      if (data.status !== 200) return warning(data.message || '重置密码失败')
+      success('重置密码成功')
+      this.isResetPwd = true
+    },
   }
 })

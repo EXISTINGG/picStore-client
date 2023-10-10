@@ -1,5 +1,5 @@
 import {defineStore} from 'pinia'
-import {updateInfo,updatepwd,deleteUser} from '@/api/user'
+import {updateInfo,updatepwd,deleteUser,getChangeEmailCode, changeEmail} from '@/api/user'
 import {success,warning,error} from '@/utils/message'
 import { getItem, setItem, removeItem } from '@/utils/localStorage'
 import {useLoginStore} from './login'
@@ -13,7 +13,9 @@ export const useUserStore = defineStore('user', {
       // 修改密码成功?
       isUpdatePwd: false,
       // 注销账号成功?
-      isdeleteUser: false
+      isdeleteUser: false,
+      // 更换邮箱成功?
+      isChangeEmail: false,
     }
   },
 
@@ -46,6 +48,20 @@ export const useUserStore = defineStore('user', {
       const {data} = await deleteUser()
       if(data.status !== 200) return warning(data.message || '注销失败')
       this.isdeleteUser = true
-    }
+    },
+
+    async getChangeEmailCodeFun(emailFrom) {
+      const {data} = await getChangeEmailCode(emailFrom.email, emailFrom.passwordEmail)
+      if(data.status !== 200) return warning(data.message || '获取验证码失败')
+      success('获取验证码成功')
+    },
+
+    async changeEmailFun(emailFrom, code) {
+      this.isChangeEmail = false
+      const {data} = await changeEmail(emailFrom.email, code)
+      if(data.status !== 200) return warning(data.message || '修改邮箱失败')
+      success('修改邮箱成功')
+      this.isChangeEmail = true
+      }
   }
 })

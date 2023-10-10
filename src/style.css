@@ -36,6 +36,7 @@ input {
   font-family: Microsoft YaHei, Heiti SC, tahoma, arial, Hiragino Sans GB, "\5B8B\4F53", sans-serif
 }
 
+
 body {
   /* CSS3 抗锯齿形 让文字显示的更加清晰 */
   -webkit-font-smoothing: antialiased;
@@ -55,8 +56,4 @@ body {
   display: block;
   content: ".";
   height: 0
-}
-
-.clearfix {
-  *zoom: 1;
 }

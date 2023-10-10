@@ -18,15 +18,19 @@
         </div>
       </el-upload>
 
-      <div class="folder-message">
-        <div  class="folder">
-          <h3>选择目录:</h3>
-          <el-select v-model="selectFolder" placeholder="目录">
+      <div class="album-message">
+        <div  class="album">
+          <h3>选择相册:</h3>
+          <el-select v-model="selectAlbum.album" placeholder="相册" @change="changeOption">
           <el-option
-            v-for="item in homeStore.folderList"
-            :key="item"
+            v-for="item in homeStore.albumList"
+            :key="item.id"
+            :label="item.name"
             :value="item"
-          />
+          >
+            <span style="float: left">{{ item.name }}</span>
+            <span style="float: right;color: var(--el-text-color-secondary);font-size: 13px;">{{ item.privacy == 0 ? '公共' : '私人' }}</span>
+          </el-option>
         </el-select>
         </div>
 
@@ -49,14 +53,14 @@ import { UploadFilled } from '@element-plus/icons-vue'
 import { getItem } from '@/utils/localStorage'
 import { useHomeStore } from '@/store/home'
 import { success, warning, error } from '@/utils/message'
-import UpLoadList from './components/UpLoadList.vue'
+import UpLoadList from './components/uploadlist.vue'
 
 const homeStore = useHomeStore()
 
-// 选择的目录
-const selectFolder = ref(homeStore.firstFolder)
+// 选择的相册(默认第一个)
+const selectAlbum = ref({album: homeStore.firstAlbum, id: homeStore.firstAlbumId})
 // 提示的消息
-const tip = ref(['上传之前先选择目录','没有目录?请刷新!','如果检测未通过,请前往图片检测自行检测'])
+const tip = ref(['上传之前先选择相册','没有相册?请刷新!','如果检测未通过,请前往图片检测自行检测'])
 // 上传的图片
 const uploadImgList = ref([])
 
@@ -69,6 +73,12 @@ const changUpLoadImgList = (file, fileitem, value) => {
   })
 }
 
+// 选择相册
+const changeOption = (e) => {
+  selectAlbum.value.id = e.id
+  selectAlbum.value.album = e.name
+}
+
 // 定时器(同时上传多张图片,防止消息过多)
 const timer = ref(null)
 // 上传之前
@@ -78,9 +88,9 @@ const beforeUpload = async (file) => {
     clearTimeout(timer.value)
   }
 
-  if (selectFolder.value === '') {
+  if (selectAlbum.value.album === '') {
     timer.value = setTimeout(() => {
-      warning('请选择目录')
+      warning('请选择相册')
     }, 500)
     return false
   }
@@ -166,11 +176,13 @@ const httpRequest = async (http) => {
   const formData = new FormData()
   // 编码上传文件名,防止中文乱码(后端解码返回)
   const filename = encodeURIComponent(file.name)
-  formData.append('file', file, filename)
-  formData.append('folder', selectFolder.value)
+  formData.append('image', file, filename)
+  formData.append('id', selectAlbum.value.id)
+  formData.append('album_name', selectAlbum.value.album)
 
   const { data } = await axios.post(
-    'https://picapi.hxq-001.top/file/upload',
+    'https://picapi.hxq-001.top/image/upload',
+    // 'http://127.0.0.1/image/upload',
     formData,
     {
       headers: {
@@ -187,20 +199,19 @@ const httpRequest = async (http) => {
       }
     }
   )
-
   if (data.status !== 200) {
     changUpLoadImgList(file, 'upLoadImg', 'exception')
     return warning(data.message || '文件上传出错')
   }
 
-  success(data.data.message || '文件上传成功')
+  success(data.message || '文件上传成功')
   changUpLoadImgList(file, 'upLoadImg', 'success')
 
-  changUpLoadImgList(file, 'imgUrl', data.data.url)
+  changUpLoadImgList(file, 'imgUrl', data.data.file_url)
 }
 
 onMounted(() => {
-  homeStore.getFolderList()
+  homeStore.getAlbumList()
 })
 </script>
 
@@ -210,7 +221,7 @@ onMounted(() => {
   margin: 0 auto;
 }
 
-.folder-message {
+.album-message {
   display: flex;
   justify-content:space-between;
   width: 100%;
@@ -220,7 +231,7 @@ onMounted(() => {
   box-sizing: border-box;
   border-radius: 5px;
 
-  .folder {
+  .album {
     width: 30%;
     
     .el-select__popper .el-popper {

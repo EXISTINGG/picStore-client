@@ -1,6 +1,6 @@
 <template>
   <div class="urlupload-body">
-    <div class="upload-folder-url">
+    <div class="upload-album-url">
       <el-input
         v-model.trim="imgUrl"
         :autosize="{ minRows: 5, maxRows: 10 }"

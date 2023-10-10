@@ -166,12 +166,17 @@
         </el-form>
          </transition>
         </div>
-
         <!-- 按钮盒子 -->
         <div class="btn-box">
+          
           <button @click="submitLoginForm(loginActive === 0 ? userNameloginFormRef : emailLoginFormRef)">登录</button>
           <!-- 绑定点击事件 -->
           <p @click="mySwitch">没有账号?去注册</p>
+        </div>
+
+        <div class="bottom-option" >
+          <p><router-link to="/resetpwd">忘记密码?</router-link></p> or 
+          <p><router-link to="/home">游客登录</router-link></p>
         </div>
       </div>
 
@@ -336,6 +341,11 @@
           <button @click="submitLoginForm(loginActive === 0 ? userNameloginFormRef : emailLoginFormRef)">登录</button>
           <!-- 绑定点击事件 -->
           <p @click="mySwitch">没有账号?去注册</p>
+        </div>
+
+        <div class="bottom-option" >
+          <p><router-link to="/resetpwd">忘记密码?</router-link></p> or 
+          <p><router-link to="/home">游客登录</router-link></p>
         </div>
       </div>
       </div>
@@ -521,12 +531,12 @@ const submitLoginForm = async (formEl) => {
       if(loginActive.value === 0) {
         loginStore.loginByUserNameFun(userNameLoginForm).then(() => {
           // 登陆成功，跳转到首页
-          if(loginStore.isLogin) {setTimeout(() => {router.push('/home')}, 1000);}
+          if(loginStore.isLogin) {setTimeout(() => {router.replace('/home')}, 1000);}
         });
       } else if (loginActive.value === 1) {
         loginStore.loginByEmailFun(emailLoginForm).then(() => {
           // 登陆成功，跳转到首页
-          if(loginStore.isLogin) {setTimeout(() => {router.push('/home')}, 1000);}
+          if(loginStore.isLogin) {setTimeout(() => {router.replace('/home')}, 1000);}
         });
       }
     } else {
@@ -677,10 +687,41 @@ input {
 /* 登录和注册盒子 */
 .login-form,
 .register-form {
+  position: relative; // 方便更改密码及游客的位置
+
   display: flex;
   flex-direction: column;
   justify-content: center;
   flex: 1;
+}
+
+.login-form .bottom-option {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute; 
+  bottom: 50px; 
+  left: 50%; 
+  transform: translateX(-50%);
+  width: 100%;
+  color: white;
+  font-weight: 900;
+  font-size: 14px;
+  cursor: pointer;
+  text-shadow: 4px 4px 3px rgba(0, 0, 0, 0.1);
+
+  p {
+    margin: 0 10px;
+    padding: 5px;
+  }
+
+  p:hover {
+    border-bottom: .5px solid white;
+  }
+
+  a {
+    color: white;
+  }
 }
 
 /* 标题盒子 */
@@ -840,6 +881,7 @@ button:hover {
       align-items: center;
       justify-content: center;
       width: 100%;
+      height: 100%;
     }
 
     .login-form .login-area {

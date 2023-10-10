@@ -4,30 +4,31 @@
       <el-aside :width="isCollapse ? '0' : '200px'" class="home-aside">
         <el-row class="el-rows">
           <el-col class="el-cols">
-            <div ref="folderRef" class="folderbtn">
-              <i>目录</i>
+            <div ref="albumRef" class="albumbtn">
+              <i>相册</i>
               <el-button
                 type="primary"
-                :icon="FolderAdd"
+                :icon="Picture"
                 size="small"
-                title="添加目录"
-                @click="addFolderDialogVisible = true"
+                title="新建相册"
+                @click="addAlbumDialogVisible = true"
               />
             </div>
-            <el-scrollbar :max-height="folderHeight" class="scrollbar-box">
+            <el-scrollbar :max-height="albumHeight" class="scrollbar-box">
+              <!-- 由于index是对象,所以default-active只能获取数组第一个对象 -->
               <el-menu
-                :default-active="homeStore.firstFolder"
+                :default-active="defaultAlbum"
                 class="menus"
                 @select="currentIdx"
               >
                 <el-menu-item
-                  :index="item"
-                  class="meun-item"
-                  v-for="(item, i) in homeStore.folderList"
+                class="meun-item"
+                v-for="(item, i) in homeStore.albumList"
+                :index="JSON.stringify(item)"
                 >
-                  <span :title="item">
-                    {{ item }}
-                    <el-icon class="icon" @click.stop="operateFolder(item)"
+                  <span :title="item.name">
+                    {{ item.name }}
+                    <el-icon class="icon" @click.stop="operateAlbum(item, item.name, item.id, item.privacy)"
                       ><ArrowRight
                     /></el-icon>
                   </span>
@@ -89,6 +90,7 @@
                 <el-menu-item index="/about"
                   ><el-icon><InfoFilled /></el-icon>关于</el-menu-item
                 >
+                <el-menu-item index="/log"><el-icon><Histogram /></el-icon>更新日志</el-menu-item>
                 <el-menu-item index=""
                   ><el-icon><Document /></el-icon
                   ><el-link
@@ -101,8 +103,12 @@
                   <template #title
                     ><el-icon><Promotion /></el-icon>开源地址</template
                   >
-                  <el-menu-item index="2-4-1">前端</el-menu-item>
-                  <el-menu-item index="2-4-2">后端</el-menu-item>
+                  <el-menu-item index="">
+                      <el-link href="https://github.com/EXISTINGG/picStore-client" target="_blank">前端</el-link>
+                    </el-menu-item>
+                    <el-menu-item index="">
+                      <el-link href="https://github.com/EXISTINGG/PicStore" target="_blank">后端</el-link>
+                    </el-menu-item>
                 </el-sub-menu>
               </el-sub-menu>
               <el-sub-menu index="3" v-if="isloginStatus">
@@ -116,7 +122,7 @@
                 <el-menu-item
                   index="/admin"
                   v-if="
-                    loginStore.user.power == 1 || loginStore.user.power == 2
+                    loginStore.user.permissions == 1 || loginStore.user.permissions == 2
                   "
                   ><el-icon><Cpu /></el-icon>后台管理</el-menu-item
                 >
@@ -170,6 +176,7 @@
                 :default-active="activeIndex"
                 class="el-menu-vertical-demo"
                 router
+                unique-opened
                 :ellipsis="false"
               >
                 <el-sub-menu index="1">
@@ -198,9 +205,8 @@
                   <template #title
                     ><el-icon><Operation /></el-icon>更多</template
                   >
-                  <el-menu-item index="/about"
-                    ><el-icon><InfoFilled /></el-icon>关于</el-menu-item
-                  >
+                  <el-menu-item index="/about"><el-icon><InfoFilled /></el-icon>关于</el-menu-item>
+                  <el-menu-item index="/log"><el-icon><Histogram /></el-icon>更新日志</el-menu-item>
                   <el-menu-item index=""
                     ><el-icon><Document /></el-icon
                     ><el-link
@@ -213,8 +219,12 @@
                     <template #title
                       ><el-icon><Promotion /></el-icon>开源地址</template
                     >
-                    <el-menu-item index="2-4-1">前端</el-menu-item>
-                    <el-menu-item index="2-4-2">后端</el-menu-item>
+                    <el-menu-item index="">
+                      <el-link href="https://github.com/EXISTINGG/picStore-client" target="_blank">前端</el-link>
+                    </el-menu-item>
+                    <el-menu-item index="">
+                      <el-link href="https://github.com/EXISTINGG/PicStore" target="_blank">后端</el-link>
+                    </el-menu-item>
                   </el-sub-menu>
                 </el-sub-menu>
                 <el-sub-menu index="3" v-if="isloginStatus">
@@ -228,7 +238,7 @@
                   <el-menu-item
                     index="/admin"
                     v-if="
-                      loginStore.user.power == 1 || loginStore.user.power == 2
+                      loginStore.user.permissions == 1 || loginStore.user.permissions == 2
                     "
                     ><el-icon><Cpu /></el-icon>后台管理</el-menu-item
                   >
@@ -245,7 +255,7 @@
         </el-header>
         <el-main class="home-main" :style="{ height: mainHeight }">
           <el-scrollbar :max-height="mainHeight">
-            <!-- 删除变化需id值，后端加个id为图片名字 -->
+            
             <Waterfall
               ref="waterfallRef"
               :list="imgList"
@@ -257,10 +267,11 @@
               infinite-scroll-delay="500"
               infinite-scroll-distance="200"
               infinite-scroll-immediate
+              v-show="imgList.length !== 0"
             >
               <template #item="{ item, url, index }">
                 <div class="card">
-                  <LazyImg :url="item.url" />
+                  <LazyImg style="cursor: pointer;" :url="item.file_url" @click="goImgDetailPage(item)"/>
                   <!-- <el-image
                     class="img"
                     :title="item.imgName"
@@ -273,7 +284,7 @@
                     @click="previewImg(index)"
                   /> -->
                   <span class="text-box">
-                    <h6  :title="item.imgName">{{ item.imgName }}</h6>
+                    <h6  :title="item.name">{{ item.name }}</h6>
                     <el-popover
                       placement="right"
                       :width="150"
@@ -284,19 +295,19 @@
                       <template #reference>
                         <el-icon
                           class="more"
-                          @click="changeCurrentImg(item.imgName, index)"
+                          @click="changeCurrentImg(item.id, item.name, index)"
                           ><Menu
                         /></el-icon>
                       </template>
                       <!-- 对图片的操作 -->
                       <!-- <div class="operate-img" style="display: flex; flex-direction: column; align-items: center;"> -->
                       <div class="operate-img">
-                        <span @click="copyImgUrl(item.url)"
+                        <span @click="copyImgUrl(item.file_url)"
                           ><el-icon><Link /></el-icon>&nbsp; 复制链接</span
                         >
-                        <span @click="renameleteImgDialog"
-                          ><el-icon><Edit /></el-icon>&nbsp; 重命名图片</span
-                        >
+                        <span @click="goImgDetailPage(item)">
+                            <el-icon><Edit /></el-icon>&nbsp; 图片信息
+                        </span>
                         <span @click="openDeleteImgDialog"
                           ><el-icon><Delete /></el-icon>&nbsp; 删除图片</span
                         >
@@ -307,16 +318,25 @@
                 </div>
               </template>
             </Waterfall>
+
+            <!-- 空页面 -->
+            <template v-if="imgList.length === 0">
+              <el-empty
+                description="暂无图片"
+                style="width: 100vw; height: 100vh; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);"
+              />
+            </template>
+
           </el-scrollbar>
         </el-main>
       </el-container>
     </el-container>
   </div>
 
-  <!-- 目录操作 -->
+  <!-- 相册操作 -->
   <el-dialog
-    v-model="OperateFolderDialogVisible"
-    :title="'请选择你要对 ' + currentOperateFolder + ' 目录进行的操作'"
+    v-model="OperateAlbumDialogVisible"
+    :title="'请选择你要对 ' + currentOperateAlbum + ' 相册进行的操作'"
     width="40%"
     draggable
     align-center
@@ -324,89 +344,113 @@
     <section class="operate-select">
       <div class="option option-delete">
         <i
-          ><el-icon><Delete /></el-icon>删除目录</i
+          ><el-icon><Delete /></el-icon>删除相册</i
         ><el-button
           type="danger"
-          :icon="FolderDelete"
+          :icon="Delete"
           circle
-          @click="DeleteFolderDialogVisible = true"
+          @click="DeleteAlbumDialogVisible = true"
         />
       </div>
       <div class="option option-rename">
         <i
-          ><el-icon><Edit /></el-icon>重命名目录</i
+          ><el-icon><Edit /></el-icon>更新相册</i
         ><el-button
           type="primary"
           :icon="Edit"
           circle
-          @click="renameFolderDialogVisible = true"
+          @click="renameAlbumDialogVisible = true"
+        />
+      </div>
+      <div class="option option-detail">
+        <i
+          ><el-icon><Postcard /></el-icon>相册信息</i
+        ><el-button
+          type="success"
+          :icon="Postcard"
+          circle
+          @click="albumDetailDialogVisible = true"
         />
       </div>
     </section>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="OperateFolderDialogVisible = false">取消</el-button>
-        <!-- <el-button type="primary" @click="OperateFolderDialogVisible = false">
+        <el-button @click="OperateAlbumDialogVisible = false">取消</el-button>
+        <!-- <el-button type="primary" @click="OperateAlbumDialogVisible = false">
           确认
         </el-button> -->
       </span>
     </template>
   </el-dialog>
 
-  <!-- 删除目录 -->
+  <!-- 删除相册 -->
   <el-dialog
-    v-model="DeleteFolderDialogVisible"
-    title="你正在删除目录"
+    v-model="DeleteAlbumDialogVisible"
+    title="你正在删除相册"
     width="30%"
     align-center
   >
     <span>
-      你确认要删除目录 {{ currentOperateFolder }} 吗？此操作不可逆，请三思
+      你确认要删除相册 {{ currentOperateAlbum }} 吗？此操作不可逆，请三思
     </span>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="DeleteFolderDialogVisible = false">取消</el-button>
-        <el-button type="danger" @click="deleteFolderFun"> 删除 </el-button>
+        <el-button @click="DeleteAlbumDialogVisible = false">取消</el-button>
+        <el-button type="danger" @click="deleteAlbumFun"> 删除 </el-button>
       </span>
     </template>
   </el-dialog>
 
-  <!-- 重命名目录 -->
+  <!-- 重命名相册 -->
   <el-dialog
-    v-model="renameFolderDialogVisible"
+    v-model="renameAlbumDialogVisible"
     width="30%"
-    :title="'你正在重命名 ' + currentOperateFolder + ' 目录'"
+    :title="'你正在更新 ' + currentOperateAlbum + ' 相册'"
     align-center
   >
-    <el-form>
-      <el-form-item label="新的目录名" label-width="100px">
-        <el-input v-model.trim="newFolderName" autocomplete="off" />
+    <el-form label-position="top">
+      <el-form-item label="新的相册名" label-width="100px">
+        <el-input v-model.trim="updateAlbum.newName" autocomplete="off" />
+      </el-form-item>
+
+      <el-form-item label="相册私密性">
+      <el-radio-group v-model="updateAlbum.newPrivacy">
+        <el-radio label="公共" />
+        <el-radio label="私人" />
+      </el-radio-group>
       </el-form-item>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="renameFolderDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="renameFolderFun"> 确认 </el-button>
+        <el-button @click="renameAlbumDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="updateAlbumFun"> 确认 </el-button>
       </span>
     </template>
   </el-dialog>
 
-  <!-- 新增目录 -->
+  <!-- 新增相册 -->
   <el-dialog
-    v-model="addFolderDialogVisible"
+    v-model="addAlbumDialogVisible"
     width="30%"
-    title="你正在新建目录"
+    title="你正在新建相册"
     align-center
   >
-    <el-form>
-      <el-form-item label="目录名" label-width="100px">
-        <el-input v-model.trim="addFolderName" autocomplete="off" />
+    <el-form label-position="top">
+      <el-form-item label="相册名" label-width="100px">
+        <el-input v-model.trim="addAlbumName.name" autocomplete="off" />
+      </el-form-item>
+
+      <el-form-item label="相册私密性">
+      <el-radio-group v-model="addAlbumName.privacy">
+        <el-radio label="公共" />
+        <el-radio label="私人" />
+      </el-radio-group>
       </el-form-item>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="addFolderDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="addFolderFun"> 确认 </el-button>
+        <el-button @click="addAlbumDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="addAlbumFun"> 确认 </el-button>
       </span>
     </template>
   </el-dialog>
@@ -436,7 +480,7 @@
   </el-dialog>
 
   <!-- 重命名图片 -->
-  <el-dialog
+  <!-- <el-dialog
     v-model="renameImgDialogVisible"
     width="30%"
     :title="
@@ -458,6 +502,26 @@
         <el-button type="primary" @click="renameImg"> 确认 </el-button>
       </span>
     </template>
+  </el-dialog> -->
+
+  <!-- 相册详情信息 -->
+  <el-dialog
+    v-model="albumDetailDialogVisible"
+    width="30%"
+    title="相册详情信息"
+    align-center
+  > 
+  <el-descriptions :title="currentOperateAlbum" border direction="vertical" size="small" column="1">
+    <el-descriptions-item label="相册所属">{{currentAlbum.creator}}</el-descriptions-item>
+    <el-descriptions-item label="相册图片数">{{ currentAlbum.file_count }}</el-descriptions-item>
+    <el-descriptions-item label="隐私性">{{ currentAlbum.privacy == 0 ? '公共' : '私人' }}</el-descriptions-item>
+    <el-descriptions-item label="存储类型">{{ currentAlbum.storage_location == 0 ? '服务器' : '云存储' }}</el-descriptions-item>   
+  </el-descriptions>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button type="primary" @click="albumDetailDialogVisible = false"> 确认 </el-button>
+      </span>
+    </template>
   </el-dialog>
 
   <!-- 提示信息 -->
@@ -471,24 +535,25 @@
       </span>
     </template>
   </el-dialog>
+
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, reactive } from 'vue'
 import axios from 'axios'
-import Folder from '@/components/Folder.vue'
+import {useRouter} from 'vue-router'
 import {
   Fold,
   Expand,
-  FolderAdd,
+  Picture,
   ArrowRight,
-  FolderDelete,
   Delete,
   Edit,
   UploadFilled,
   UserFilled,
   Avatar,
   InfoFilled,
+  Histogram,
   Promotion,
   PictureFilled,
   WarningFilled,
@@ -500,7 +565,8 @@ import {
   Menu,
   Link,
   ArrowUpBold,
-  ArrowDownBold
+  ArrowDownBold,
+  Postcard
 } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useHomeStore } from '@/store/home'
@@ -513,70 +579,121 @@ import { LazyImg, Waterfall } from 'vue-waterfall-plugin-next'
 import 'vue-waterfall-plugin-next/dist/style.css'
 
 const homeStore = useHomeStore()
+const router = useRouter()
 
-const folderRef = ref(null)
-const folderHeight = ref(0)
+const albumRef = ref(null)
+const albumHeight = ref(0)
 const headerRef = ref(null)
 const mainHeight = ref(0)
 
-// 是否显示对话框(操作目录)
-const OperateFolderDialogVisible = ref(false)
-// 正在操作的目录
-const currentOperateFolder = ref('')
-// 是否显示对话框(删除目录)
-const DeleteFolderDialogVisible = ref(false)
-// 是否显示对话框(重命名目录)
-const renameFolderDialogVisible = ref(false)
-// 重命名的目录名
-const newFolderName = ref('')
-// 是否显示对话框(新增目录)
-const addFolderDialogVisible = ref(false)
-// 新增目录名
-const addFolderName = ref('')
+// 默认打开的相册
+const defaultAlbum = ref('')
+// 是否显示对话框(操作相册)
+const OperateAlbumDialogVisible = ref(false)
+// 正在操作的相册
+const currentOperateAlbum = ref('')
+// 正在操作的相册id
+const currentOperateAlbumId = ref('')
+// 是否显示对话框(删除相册)
+const DeleteAlbumDialogVisible = ref(false)
+// 是否显示对话框(重命名相册)
+const renameAlbumDialogVisible = ref(false)
+// 是否显示对话框(相册详情信息)
+const albumDetailDialogVisible = ref(false)
+// 当前操作的相册
+const currentAlbum = ref({})
+// 更新的相册信息
+const updateAlbum = reactive({
+  newName: '',
+  newPrivacy: '',
+})
+// 是否显示对话框(新增相册)
+const addAlbumDialogVisible = ref(false)
+// 新增相册名
+const addAlbumName = ref({
+  name: '',
+  privacy: ''
+})
 
-// 切换目录
-const currentIdx = async (index) => {
-  if(index === homeStore.currentFolder) return
-  // vue-waterfall-plugin-next插件会缓存图片链接，导致切换目录时会存在之前目录的图片，故清空
+// 切换相册
+const currentIdx = async (album) => {
+  // 切换相册接受的参数是由el-menu-item的index决定,而这里的需要id和name,
+  // 所以,index必须使用转化为字符的对象,这里必须转化为对象使用
+  const {id, name} = JSON.parse(album);
+  if(name === homeStore.currentAlbum) return
+
+  // vue-waterfall-plugin-next插件会缓存图片链接，导致切换相册时会存在之前相册的图片，故清空
+
   imgList.value = []
-  homeStore.currentFolder = index
-  await homeStore.getImgList(index, 40, true, true)
+
+  homeStore.currentAlbumId = id
+  homeStore.currentAlbum = name
+  await homeStore.getImgList(id, name, true)
   imgList.value = homeStore.imgList
 }
 
-// 操作目录
-const operateFolder = (folder) => {
-  OperateFolderDialogVisible.value = true
-  currentOperateFolder.value = folder
-  // 清空newFolderName
-  newFolderName.value = ''
+// 操作相册
+const operateAlbum = (item, album, id, privacy) => {
+  currentAlbum.value = item
+  OperateAlbumDialogVisible.value = true
+  currentOperateAlbum.value = album
+  currentOperateAlbumId.value = id
+
+  // 替换updateAlbum的值,用于更新相册信息
+  updateAlbum.newName = album
+  updateAlbum.newPrivacy = privacy == 0 ? '公共' : '私人';
 }
 
-// 确认删除目录
-const deleteFolderFun = () => {
-  homeStore.deleteFolderFun(currentOperateFolder.value)
-  DeleteFolderDialogVisible.value = false
-  OperateFolderDialogVisible.value = false
+// 确认删除相册
+const deleteAlbumFun = async () => {
+  
+  await homeStore.deleteAlbumFun(currentOperateAlbumId.value,currentOperateAlbum.value)
+
+  if(homeStore.isDelAlbum) {
+    // window.location.reload();
+    await initHome()
+  }
+
+  DeleteAlbumDialogVisible.value = false
+  OperateAlbumDialogVisible.value = false
 }
 
-// 确认重命名目录
-const renameFolderFun = () => {
-  if (newFolderName.value === '') return warning('请输入有效字符')
-  if (newFolderName.value === currentOperateFolder.value)
-    return warning('与旧目录名相同')
-  // alert(newFolderName.value)
-  homeStore.renameFolderFun(currentOperateFolder.value, newFolderName.value)
-  newFolderName.value = ''
-  renameFolderDialogVisible.value = false
-  OperateFolderDialogVisible.value = false
+// 确认更新相册信息
+const updateAlbumFun = () => {
+  // newName, newPrivacy必须有一个
+  if (updateAlbum.newName === '' && updateAlbum.newPrivacy === '') return warning('请至少选择一个更新')
+
+  if (updateAlbum.newName === '') return warning('请输入有效字符');
+
+  const privacy = updateAlbum.newPrivacy === '公共' ? 0 : 1;
+
+  // if (updateAlbum.newName === currentOperateAlbum.value) return warning('与旧相册名相同');
+  // 如果旧相册名与新相册名不相同，说明更改了相册名，需要更新相册名
+  if (updateAlbum.newName !== currentOperateAlbum.value) {
+    homeStore.updateAlbumFun(currentOperateAlbumId.value, currentOperateAlbum.value, updateAlbum.newName, privacy)
+  } else {
+    // 未更改相册名,相册名为空
+    homeStore.updateAlbumFun(currentOperateAlbumId.value, currentOperateAlbum.value, '', privacy)
+  }
+
+  updateAlbum.newName = ''
+  updateAlbum.newPrivacy = ''
+
+  renameAlbumDialogVisible.value = false
+  OperateAlbumDialogVisible.value = false
 }
 
-// 新建目录
-const addFolderFun = () => {
-  if (addFolderName.value === '') return warning('请输入有效字符')
-  homeStore.addFolderFun(addFolderName.value).then(() => {
-    addFolderName.value = ''
-    addFolderDialogVisible.value = false
+// 新建相册
+const addAlbumFun = () => {
+  if (addAlbumName.value.name === '') return warning('请输入有效字符');
+  if(addAlbumName.value.privacy === '') return warning('请选择相册私密性');
+
+  const privacy = addAlbumName.value.privacy === '公共' ? 0 : 1
+
+  homeStore.addAlbumFun(addAlbumName.value.name, privacy).then(() => {
+    addAlbumName.value.name = ''
+    addAlbumName.value.privacy = ''
+    addAlbumDialogVisible.value = false
   })
 }
 
@@ -631,10 +748,11 @@ const logOut = () => {
 
 const randomImg = async () => {
   const { data } = await axios.get(
-    'https://picapi.hxq-001.top/file/api/randomimg'
+    'https://picapi.hxq-001.top/image/api/randomimgurl'
+    // 'http://127.0.0.1/image/api/randomimgurl',
   )
   if (data.status !== 200) return warning(data.message)
-  window.open(data.url)
+  window.open(data.data)
 }
 
 const imgStore = useImgStore()
@@ -644,6 +762,8 @@ const imgList = ref([])
 const imgIndex = ref(0)
 // 现操作的图片
 const currentImg = ref('')
+// 现操作的图片id
+const currentImgId = ref('')
 // 现操作的图片的索引
 const currentImgIdx = ref(0)
 // 对图片的操作 是否可用
@@ -654,7 +774,8 @@ const deleteImgDialogVisible = ref(false)
 const waterfallRef = ref(null)
 
 // 现在选择的图片的name,index
-const changeCurrentImg = (name, i) => {
+const changeCurrentImg = (id, name, i) => {
+  currentImgId.value= id;
   currentImg.value = name
   currentImgIdx.value = i
 }
@@ -663,23 +784,27 @@ const openDeleteImgDialog = () => {
   deleteImgDialogVisible.value = true
   popoverDisabledFun()
 }
+
+//#region 
 // 重命名图片询问框
-const renameImgDialogVisible = ref(false)
+// const renameImgDialogVisible = ref(false)
 // 打开重命名图片询问框
-const renameleteImgDialog = () => {
-  renameImgDialogVisible.value = true
-  newImgName.value = ''
-  popoverDisabledFun()
-}
+// const renameleteImgDialog = () => {
+//   renameImgDialogVisible.value = true
+//   newImgName.value = ''
+//   popoverDisabledFun()
+// }
+//#endregion
+
 // 新的图片名
-const newImgName = ref('')
+// const newImgName = ref('')
 
 // 获取更多图片
 const getMore = () => {
-  homeStore.getImgList(homeStore.currentFolder, 20)
+  homeStore.getImgList(homeStore.currentAlbumId, homeStore.currentAlbum, false, homeStore.offset)
 }
 // 预览图片
-const previewImg = (i) => (imgIndex.value = i)
+// const previewImg = (i) => (imgIndex.value = i)
 
 let timer
 // 隐藏对图片的操作(关闭功能后立马启用,为了隐藏Popover)
@@ -702,9 +827,18 @@ const copyImgUrl = async (url) => {
     popoverDisabledFun()
   }
 }
+
+// 去往图片详情页
+const goImgDetailPage = (item) => {
+  // 图片详情信息,用于详情页使用
+  setItem('imgDetail',item);
+
+  router.push('/imgdetail');
+}
+
 // 删除图片
 const deleteImg = () => {
-  imgStore.deleteImgFun(homeStore.currentFolder, currentImg.value).then(() => {
+  imgStore.deleteImgFun(currentImgId.value,currentImg.value).then(() => {
     if (imgStore.isDelete) {
       // 关闭
       deleteImgDialogVisible.value = false
@@ -713,7 +847,7 @@ const deleteImg = () => {
       // 清空
       homeStore.imgList = []
       // 刷新
-      homeStore.getImgList(homeStore.currentFolder, 40, true)
+      homeStore.getImgList(homeStore.currentAlbumId, homeStore.currentAlbum)
       // 重新渲染图片
       // waterfallRef.value.renderer()
       // 重置数据
@@ -721,32 +855,35 @@ const deleteImg = () => {
     }
   })
 }
-// 重命名图片
-const renameImg = () => {
-  // console.log(currentImg.value, newImgName.value, homeStore.currentFolder)
-  if (newImgName.value === '') return warning('请输入有效字符')
-  imgStore
-    .renameImgFun(homeStore.currentFolder, currentImg.value, newImgName.value)
-    .then(() => {
-      if (imgStore.isRename) {
-        // 关闭
-        renameImgDialogVisible.value = false
-        // 清空
-        homeStore.imgList = []
-        // 没有重新渲染，清空列表
-        imgList.value = []
-        // 刷新
-        homeStore.getImgList(homeStore.currentFolder, 40, true)
-        // 重新赋予列表
-        imgList.value = homeStore.imgList
-        // imgList.value.filter((item,i) => {
-        //   return currentImgIdx.value === i
-        // }).imgName = newImgName.value
-        // 重置数据
-        imgStore.isRename = false
-      }
-    })
-}
+
+//#region 
+// 重命名图片(废弃)
+// const renameImg = () => {
+//   // console.log(currentImg.value, newImgName.value, homeStore.currentAlbum)
+//   if (newImgName.value === '') return warning('请输入有效字符')
+//   imgStore
+//     .renameImgFun(homeStore.currentAlbum, currentImg.value, newImgName.value)
+//     .then(() => {
+//       if (imgStore.isRename) {
+//         // 关闭
+//         renameImgDialogVisible.value = false
+//         // 清空
+//         homeStore.imgList = []
+//         // 没有重新渲染，清空列表
+//         imgList.value = []
+//         // 刷新
+//         homeStore.getImgList(homeStore.currentAlbumId, homeStore.currentAlbum)
+//         // 重新赋予列表
+//         imgList.value = homeStore.imgList
+//         // imgList.value.filter((item,i) => {
+//         //   return currentImgIdx.value === i
+//         // }).imgName = newImgName.value
+//         // 重置数据
+//         imgStore.isRename = false
+//       }
+//     })
+// }
+//#endregion
 
 // 提示信息，仅使用一次
 const alertMessage = ref(false)
@@ -754,18 +891,33 @@ const alertMessage = ref(false)
 const storedalertMessage = sessionStorage.getItem('alertMessage')
 if (storedalertMessage !== 'true') {
   // 如果标志不为true，则提示
-  alertMessage.value = true
+  // alertMessage.value = true
+  alertMessage.value = false // 不显示提示
 }
 // 弹出过提示信息
 sessionStorage.setItem('alertMessage', 'true')
 
-onMounted(async () => {
-  folderHeight.value = window.innerHeight - folderRef.value.offsetHeight
-  mainHeight.value = window.innerHeight - headerRef.value.offsetHeight
-  await homeStore.getFolderList()
-  await homeStore.getImgList(homeStore.firstFolder, 40, true, true)
+const initHome = async () => {
+  // 获取相册列表
+  await homeStore.getAlbumList()
+  // 获取图片列表
+  await homeStore.getImgList(homeStore.firstAlbumId, homeStore.firstAlbum,true)
+  // 设置图片列表
   imgList.value = homeStore.imgList
-  homeStore.currentFolder = homeStore.firstFolder
+  // 设置默认打开的相册
+  defaultAlbum.value = JSON.stringify(homeStore.albumList[0])
+  // 设置当前相册
+  homeStore.currentAlbum = homeStore.firstAlbum
+  homeStore.currentAlbumId = homeStore.firstAlbumId
+}
+
+onMounted(async () => {
+  // 获取相册高度
+  albumHeight.value = window.innerHeight - albumRef.value.offsetHeight
+  // 获取主页面高度
+  mainHeight.value = window.innerHeight - headerRef.value.offsetHeight
+  
+  await initHome()
 })
 </script>
 
@@ -791,7 +943,7 @@ body {
   width: 100%;
   // height: 100%;
 
-  .folderbtn {
+  .albumbtn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -887,6 +1039,9 @@ body {
   }
   .option-rename:hover {
     background: #79bbff;
+  }
+  .option-detail:hover {
+    background: #95d475;
   }
 }
 

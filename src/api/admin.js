@@ -13,7 +13,7 @@ export const getUserList = () => request.get('admin/getuser')
 // 修改user权限
 export const changeUser = (setPower,setUserName, setId) => {
   const data = {setPower,setUserName, setId}
-  return request.post('admin/updatepower',data)
+  return request.post('admin/updatepermissions',data)
 }
 
 // 获取注销user列表
@@ -26,7 +26,27 @@ export const delUser = (delUserName, id) => {
   return request.post('admin/deleteuser',data)
 }
 // 恢复注销的某个用户
-export const restoreUser = (delUserName, id) => {
-  const data = {delUserName, id}
+export const restoreUser = (restoreUser, id) => {
+  const data = {restoreUser, id}
   return request.post('admin/restoreuser',data)
+}
+
+// 获取系统设置
+export const getSystem = () => request.get('admin/getsystem')
+
+// 更改系统设置(至少一项参数)
+export const changeSystem = (storage_type, cloud_disk_capacity, local_disk_capacity) => {
+  const data = {storage_type, cloud_disk_capacity, local_disk_capacity}
+  return request.post('admin/changesystem',data)
+}
+
+// 获取所有相册
+export const getAlbumList = () => request.get('admin/getallalbum')
+
+// 获取所有图片
+export const getAllImage = (offset,batchSize) => {
+  const params = {
+    offset,batchSize
+  };
+  return request.get('admin/getallimg',{params})
 }

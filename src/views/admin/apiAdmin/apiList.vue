@@ -1,11 +1,11 @@
 <template>
   <el-table :data="filterTableData" style="width: 100%">
     <el-table-column label="ID" prop="id" />
-    <el-table-column label="API" prop="interface" />
-    <el-table-column label="作用" prop="function" />
+    <el-table-column label="API" prop="name" />
+    <el-table-column label="作用" prop="description" />
     <el-table-column label="所需权限" width="180">
       <template #default="scope">
-          <el-select v-model="scope.row.power"  placeholder="Select">
+          <el-select v-model="scope.row.required_permissions"  placeholder="Select">
             <el-option
               v-for="item in 3"
               :key="item"
@@ -44,7 +44,7 @@ const filterTableData = computed(() =>
   adminStore.apiList.filter(
     (data) =>
       !search.value ||
-      data.interface.includes(search.value) || data.function.includes(search.value)
+      data.name.includes(search.value) || data.description.includes(search.value)
   )
 )
 

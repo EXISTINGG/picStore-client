@@ -9,17 +9,22 @@
     <el-table-column label="ID" prop="id" />
     <el-table-column label="用户名" prop="username" />
     <el-table-column label="邮箱" prop="email" />
-    <el-table-column label="注册日期">
+    <el-table-column label="注册日期" width="200px">
       <template #default="scope">
-        {{ formatTimestamp(scope.row.regdate) }}
+        {{ formatTimestamp(scope.row.registration_time) }}
+      </template>
+    </el-table-column>
+    <el-table-column label="注销日期" width="200">
+      <template #default="scope">
+        {{ formatTimestamp(scope.row.logout_time) }}
       </template>
     </el-table-column>
     <el-table-column label="角色" width="180">
       <template #default="scope">
-        <el-tag v-show="scope.row.power == 1">超级管理员</el-tag>
-        <el-tag type="success" v-show="scope.row.power == 2">管理员</el-tag>
-        <el-tag type="warning" v-show="scope.row.power == 3">普通用户</el-tag>
-        <el-tag type="info" v-show="scope.row.power == 4">禁用功能</el-tag>
+        <el-tag v-show="scope.row.permissions == 1">超级管理员</el-tag>
+        <el-tag type="success" v-show="scope.row.permissions == 2">管理员</el-tag>
+        <el-tag type="warning" v-show="scope.row.permissions == 3">普通用户</el-tag>
+        <el-tag type="info" v-show="scope.row.permissions == 4">禁用功能</el-tag>
       </template>
     </el-table-column>
     <el-table-column label="状态" width="180">
