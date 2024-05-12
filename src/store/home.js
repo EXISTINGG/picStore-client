@@ -99,7 +99,7 @@ export const useHomeStore = defineStore('home', {
     // 更新相册信息
     async updateAlbumFun(id, albumName, newAlbumName, newPrivacy) {
       const {data} = await updateAlbum(String(id), albumName, newAlbumName, String(newPrivacy))
-      if(data.status !== 200) return error(data.message || '重命名相册失败')
+      if(data.status !== 200) return error(data.message || '更新相册信息失败')
       success(data.message)
       this.getAlbumList()
     },

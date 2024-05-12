@@ -38,9 +38,9 @@
 </template>
 
 <script setup>
-import {ref} from 'vue'
+import {ref, onUnmounted} from 'vue'
 import { useRouter } from 'vue-router';
-import { getItem } from '@/utils/localStorage';
+import { getItem, removeItem } from '@/utils/localStorage';
 import {formatTimestamp} from '@/utils/formatTimestamp';
 import {convertFileSize} from '@/utils/convert';
 import {strLength} from '@/utils/strLength';
@@ -51,6 +51,8 @@ const imgUrl = ref([])
 const imgDetail = getItem('imgDetail');
 imgUrl.value = [imgDetail.file_url]
 
+// 页面销毁时清除数据
+onUnmounted(() => removeItem('imgDetail'))
 </script>
 
 <style lang="scss" scoped>

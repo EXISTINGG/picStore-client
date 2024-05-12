@@ -132,7 +132,8 @@ const beforeUpload = async (file) => {
   }, 500)
 
   const { data } = await axios.post(
-    'https://nsfwapi.hxq-001.top/nsfw',
+    // 'https://nsfwapi.hxq-001.top/nsfw',
+    'http://47.113.146.58:8099/nsfw',
     formData,
     {
       headers: {
@@ -182,8 +183,9 @@ const httpRequest = async (http) => {
   formData.append('filename', filename)
 
   const { data } = await axios.post(
-    'https://picapi.hxq-001.top/image/upload',
-    // 'http://127.0.0.1/image/upload',
+    // 'https://picapi.hxq-001.top/image/upload',
+    'http://127.0.0.1/image/upload',
+    // 'http://47.113.146.58:8091/image/upload',
     formData,
     {
       headers: {

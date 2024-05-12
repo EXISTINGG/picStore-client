@@ -2,13 +2,14 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import { getItem} from '@/utils/localStorage'
 import {warning} from '@/utils/message'
 
+import Home from '@/views/home/index.vue'
 
 const routes = [
   { path: '/', redirect: '/home' },
   {
     path: '/home', 
     name: 'Home', 
-    component: () => import('@/views/home/index.vue'),
+    component: Home,
     meta: {title: '首页😀',keepAlive: true},
     children: [
     ]

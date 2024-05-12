@@ -4,8 +4,9 @@ import {getItem} from './localStorage'
  
 // (有Loading效果)
 export const request = axios.create({
-  baseURL: 'https://picapi.hxq-001.top',
-  // baseURL: 'http://127.0.0.1',
+  // baseURL: 'https://picapi.hxq-001.top',
+  baseURL: 'http://127.0.0.1',
+  // baseURL: 'http://47.113.146.58:8091',
   // 请求超时时间
   timeout: 10000,
   // headers: {
@@ -14,8 +15,9 @@ export const request = axios.create({
 })
 // (无Loading效果)
 export const requests = axios.create({
-  baseURL: 'https://picapi.hxq-001.top',
-  // baseURL: 'http://127.0.0.1',
+  // baseURL: 'https://picapi.hxq-001.top',
+  baseURL: 'http://127.0.0.1',
+  // baseURL: 'http://47.113.146.58:8091',
   // 请求超时时间
   timeout: 10000
 })

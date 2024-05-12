@@ -103,7 +103,8 @@ const httpRequest = async (http) => {
 
   try {
     const { data } = await axios.post(
-      'https://nsfwapi.hxq-001.top/nsfw',
+      // 'https://nsfwapi.hxq-001.top/nsfw',
+      'http://47.113.146.58:8099/nsfw',
       formData,
       {
         headers: {

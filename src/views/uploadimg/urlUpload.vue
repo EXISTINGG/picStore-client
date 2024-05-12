@@ -109,7 +109,8 @@ const submitUrl = () => {
 
     //
     const { data } = await axios.post(
-      `https://nsfwapi.hxq-001.top/nsfw-link`,
+      // `https://nsfwapi.hxq-001.top/nsfw-link`,
+      'http://47.113.146.58:8099/nsfw-link',
       { image_url: url },
       {
         // 上传进度数值1-100(已上传/总量). | 0(清除小数部分). 10(将浮点数百分比转换为整数百分比)
@@ -140,8 +141,9 @@ const submitUrl = () => {
     // console.table({id :selectAlbum.value.id, album_name: selectAlbum.value.album, imgUrl: url});
     // 开始上传
     const { data: uploadRes } = await axios.post(
-      'https://picapi.hxq-001.top/image/netimg',
-      // 'http://127.0.0.1/image/netimg',
+      // 'https://picapi.hxq-001.top/image/netimg',
+      'http://127.0.0.1/image/netimg',
+      // 'http://47.113.146.58:8091/image/netimg',
       { id :String(selectAlbum.value.id), album_name: selectAlbum.value.album, imgUrl: url },
       {
         headers: {

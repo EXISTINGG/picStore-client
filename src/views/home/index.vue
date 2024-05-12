@@ -526,7 +526,7 @@
 
   <!-- 提示信息 -->
   <el-dialog v-model="alertMessage" title="警告" width="30%" align-center>
-    <span>本站仅用于演示，会定时清理数据，请勿将本站作为图床使用</span>
+    <span>本站仅用于演示，会不定时清理数据，请勿将本站作为图床使用</span>
     <template #footer>
       <span class="dialog-footer">
         <el-button type="primary" @click="alertMessage = false">
@@ -659,7 +659,7 @@ const deleteAlbumFun = async () => {
 }
 
 // 确认更新相册信息
-const updateAlbumFun = () => {
+const updateAlbumFun = async () => {
   // newName, newPrivacy必须有一个
   if (updateAlbum.newName === '' && updateAlbum.newPrivacy === '') return warning('请至少选择一个更新')
 
@@ -672,8 +672,13 @@ const updateAlbumFun = () => {
   if (updateAlbum.newName !== currentOperateAlbum.value) {
     homeStore.updateAlbumFun(currentOperateAlbumId.value, currentOperateAlbum.value, updateAlbum.newName, privacy)
   } else {
-    // 未更改相册名,相册名为空
-    homeStore.updateAlbumFun(currentOperateAlbumId.value, currentOperateAlbum.value, '', privacy)
+    // 未更改相册名,相册名数据为空
+    await homeStore.updateAlbumFun(currentOperateAlbumId.value, currentOperateAlbum.value, '', privacy)
+    
+    // 获取更新相册信息后的图片列表
+    await homeStore.getImgList(currentOperateAlbumId.value, currentOperateAlbum.value,true)
+    // 重新加载图片列表
+    imgList.value = homeStore.imgList
   }
 
   updateAlbum.newName = ''
@@ -748,15 +753,16 @@ const logOut = () => {
 
 const randomImg = async () => {
   const { data } = await axios.get(
-    'https://picapi.hxq-001.top/image/api/randomimgurl'
-    // 'http://127.0.0.1/image/api/randomimgurl',
+    // 'https://picapi.hxq-001.top/image/api/randomimgurl',
+    'http://127.0.0.1/image/api/randomimgurl',
+    // 'http://47.113.146.58:8091/image/api/randomimgurl',
   )
   if (data.status !== 200) return warning(data.message)
   window.open(data.data)
 }
 
 const imgStore = useImgStore()
-// 需要渲染的图片
+// 需要渲染的图片(展示的图片数据)
 const imgList = ref([])
 // 图片索引
 const imgIndex = ref(0)
@@ -885,14 +891,15 @@ const deleteImg = () => {
 // }
 //#endregion
 
-// 提示信息，仅使用一次
+// 是否弹出提示
 const alertMessage = ref(false)
 // 在页面加载时检查sessionStorage中的标志
 const storedalertMessage = sessionStorage.getItem('alertMessage')
 if (storedalertMessage !== 'true') {
   // 如果标志不为true，则提示
   // alertMessage.value = true
-  alertMessage.value = false // 不显示提示
+
+  alertMessage.value = false // 本项目不使用此弹窗，不显示提示
 }
 // 弹出过提示信息
 sessionStorage.setItem('alertMessage', 'true')

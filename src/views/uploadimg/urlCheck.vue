@@ -88,7 +88,8 @@ const submitUrl = async () => {
     uploadImgObj.value.isLoading = true
     //
     const { data } = await axios.post(
-      `https://nsfwapi.hxq-001.top/nsfw-link`,
+      // `https://nsfwapi.hxq-001.top/nsfw-link`,
+      'http://47.113.146.58:8099/nsfw-link',
       { image_url: uploadImgObj.value.name },
       {
         // 取消令牌
